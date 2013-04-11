@@ -1,0 +1,23 @@
+//#! tooltip = Starving by 4x speed
+//#! name = Starving Bot
+//#! uniq = dfccd2e6-1cd5-495d-8947-9f0d6d4059aa
+
+include("jBotAPI");
+
+function main() {
+	while (jGetHungry() > 50) {
+		jSetSpeed(3);
+		jMoveStep(jCoord(80, 0));
+		jWaitStartMove(30000);
+		drinkWater();
+		jWaitEndMove(30000);
+		jWaitEndProgress(30000);
+		jMoveStep(jCoord(-80, 0));
+		jWaitStartMove(30000);
+		drinkWater();
+		jWaitEndMove(30000);
+		jWaitEndProgress(30000);
+	}
+}
+
+main();

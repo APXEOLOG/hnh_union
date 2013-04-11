@@ -1,0 +1,209 @@
+var actionTimeout = 1000 * 60 * 1;
+
+function waitUnActual(item) {
+	while (item.isActual()) {
+		jSleep(100);
+	}
+}
+
+function resetCursor() {
+	if (!jIsCursor("arw")) {
+		jAbsClick(jCoord(0, 0), 3, 0);
+		jWaitCursor("arw", actionTimeout);
+	}
+}
+
+function checkInventory() {
+	if(!jHaveWindow("Inventory")) {
+		jToggleInventory();
+		while(!jHaveWindow("Inventory"))
+			jSleep(100);
+	}
+	return jGetWindow("Inventory").getInventories()[0];
+}
+
+function checkEquipment() {
+	if(!jHaveWindow("Equipment")) {
+		jToggleEquipment();
+		while(!jHaveWindow("Equipment"))
+			jSleep(100);
+	}
+	return jGetJSEquip();
+}
+
+function waitInventoryObject(inv, objname) {
+	while (true) {
+		var objs = inv.getItems(objname);
+		if (objs.length > 0) break;
+		else jSleep(100);
+	}	
+}
+
+function drinkWater() {
+	var inventory = checkInventory();
+	var buckets = inventory.getItems("bucket-water");
+	if (buckets.length > 0) {
+		inventory.sortItems(buckets, "amount", false);
+		var bucket = buckets[0];
+		var bucket_coord = bucket.coord();
+		if (bucket.isActual()) {
+			bucket.take();
+			jWaitDrag();
+			var flasks = inventory.getItems("waterflask", "waterskin");
+			if (flasks.length > 0) {
+				var flask = flasks[0];
+				if (flask.isActual()) {
+					flask.itemact(0);
+					jSleep(500);
+					inventory.drop(bucket_coord);
+					jWaitDrop();
+				}
+			}
+		}
+	}
+	var flasks = inventory.getItems("waterflask", "waterskin");
+	if (flasks.length > 0) {
+		var flask = flasks[0];
+		if (flask.isActual()) {
+			flask.iact();
+			if (jWaitPopup(actionTimeout)) {
+				jSelectContextMenu("Drink");
+				jWaitProgress();
+			}
+		}
+	}
+}
+
+function dropItem(coord) {
+	var items = checkInventory().getItems("");
+	for (var i = 0; i < items.length; i++) {
+		if (items[i].coord().x == coord.x && items[i].coord().y == coord.y) { 
+			items[i].drop();
+			break;
+		}
+	}	
+}
+
+function waitDragName(name) {
+	while (true) {
+		var item = jGetDraggingItem();
+		if (item != null) {
+			if (item.resName() != null) {
+			if (item.resName().indexOf(name) >= 0) {
+				break;
+			} else {
+				jSleep(100);
+			}
+			} else jSleep(100);
+		} else {
+			break;
+		}
+	}
+}
+
+function waitPFEndMove() {
+	while (true) {
+		jWaitEndMove();
+		jSleep(500);
+		if (!jIsMoving()) {
+			return;
+		}
+	}
+}
+
+function getNearestTree() {
+	var trees = jGetObjects(25, jCoord(0, 0), ["trees/fir", "trees/pine"]);
+	var min_len = 100500; var objid = 0;
+	for (var i = 0; i < trees.length; i++) {
+		if (jObjectPos(trees[i]).dist(jMyCoords()) < min_len) {
+			objid = trees[i];
+			min_len = jObjectPos(trees[i]).dist(jMyCoords());
+		}
+	}
+	return objid;
+}
+
+function travelCount() {
+	var buffs = jGetBuffs();
+	for (var i = 0; i < buffs.length; i++) {
+		if (buffs[i].name().indexOf("Travel Weariness") >= 0) {
+			return buffs[i].meter();
+		}
+	}
+	return 0;
+}
+
+function noMoreWine() {
+	var buffs = jGetBuffs();
+	for (var i = 0; i < buffs.length; i++) {
+		if (buffs[i].name().indexOf("Drunk and Riotous") >= 0) {
+			return true;
+		}
+	}
+	return false;
+}
+
+function _pf_click(id) {
+	if (!jIsPathFree(jObjectPos(id))) {
+		resetCursor();
+		if (jPFClick(id) > 0) {
+			if (jWaitStartMove(1000)) {
+				waitPFEndMove();
+				while (jIsMoving() || jMyCoords().dist(jObjectPos(id)) > 33) {
+					jSleep(100);
+				}
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+function _pf_move(coord) {
+	if (!jIsPathFree(coord)) {
+		resetCursor();
+		if (jPFMove(coord) > 0) {
+			if (jWaitStartMove(1000)) {
+				waitPFEndMove();
+				while (jIsMoving() || jMyCoords().dist(coord) > 1) {
+					jSleep(100);
+				}
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+function dropAll() {
+	if (jIsDragging()) {
+		jDropObject(0);
+		jWaitDrop(actionTimeout);
+	}
+}
+
+function waitChat(name, timeout) {
+	var time = 0;
+	while (true) {
+		var chats = haven.getChats();
+		for (var i = 0; i < chats.length; i++) {
+			if (chats[i].chatName().indexOf(name) >= 0) {
+				return true;
+			}
+		}
+		jSleep(100);
+		time += 100;
+		if (time > timeout) return false;
+	}
+}
+
+// Говорит текст в ареа чат
+function sayArea(text) {
+	var chats = jGetChats();
+	for (var i = 0; i < chats.length; i++) {
+		if (chats[i].chatName().indexOf("Area Chat") >= 0) {
+			chats[i].sendMessage(text);
+			break;
+		}
+	}
+}

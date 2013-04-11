@@ -1,0 +1,104 @@
+//#! tooltip = This script fills barrels with water from well
+//#! name = Well to Barrel
+//#! uniq = WELLTOBARRELBOT
+
+//function checks inventory
+//and opens it, if it closed
+function checkInventory()
+{
+	if(!jHaveWindow("Inventory"))
+	{
+		jToggleInventory();
+		while(!jHaveWindow("Inventory"))
+			jSleep(100);
+	}
+}
+
+//like main() at C
+function main()
+{
+	var iw = jGetInputWidget(250, 250, "Input raduis", "Input barrel searching radius (tiles):");
+	var RAD = 0;
+	if(iw != null)
+	{
+		if(iw.waitForPress(45000))
+		{
+			RAD = iw.intValue();
+			iw.close();
+		}
+		else return;
+	}
+	if (RAD == 0) RAD = 6;
+	var well = jFindObjectByName("well", 10); //well
+	var barrels = jGetObjects(RAD, jCoord(0, 0), "barrel"); //array of barrels
+	if(barrels[0] == 0)
+		{
+			jInGamePrint("Cannot find barrels. Script failed.");
+			return;
+		}
+	//if no wells around
+	if(!well)
+	{
+		jInGamePrint("Cannot find a well. Script failed.");
+		return;
+	}
+	//well founded
+	checkInventory();
+	for(var i in barrels)
+	{
+	//if no barrels at array
+	if(barrels[i] == 0)
+		break;
+	while(1)
+	{
+		var bucket = jGetWindow("Inventory").getInventories()[0].getItems("buckete")[0];
+		if(bucket == null)
+			break;
+		var bc = bucket.coord();
+		bucket.take();
+		jWaitDrag(5000);
+		jSleep(100);
+		jObjectInteractClick(well, 0); //RMB at well
+		var drag = jGetDraggingItem();
+		//waits for the filled bucket
+		while(drag.resName().indexOf("water") == -1)
+			jSleep(100);
+		jGetWindow("Inventory").getInventories()[0].drop(bc);
+		jWaitDrop(5000);
+		jSleep(100);
+		jDoClick(barrels[i], 3, 0);
+		//waits for barrel window
+		jWaitWindow("Barrel");
+		jSleep(1000);
+		if(jGetWindow("Barrel").getLabelText(1).indexOf("100.0") != -1) //barrel is full
+		{
+			//empty bucket
+			var bucket2 = jGetWindow("Inventory").getInventories()[0].getItems("bucket-water")[0];
+			bucket2.iact();
+			jWaitPopup(5000);
+			jSelectContextMenu("Empty");
+			while(bucket2.resName().indexOf("water") > -1)
+				jSleep(100);
+			jDoClick(well, 1, 0);
+			jSleep(700);
+			break; //from while(1)
+		}
+		//if barrel isn't full
+		var bucket2 = jGetWindow("Inventory").getInventories()[0].getItems("bucket-water")[0];
+		var bc2 = bucket2.coord();
+		bucket2.take();
+		jWaitDrag(5000);
+		jObjectInteractClick(barrels[i], 0); //RMB at barrel
+		var drag2 = jGetDraggingItem();
+		while(drag2.resName().indexOf("buckete") == -1)
+			jSleep(100);
+		jGetWindow("Inventory").getInventories()[0].drop(bc2);
+		jWaitDrop(5000);
+		jSleep(100);
+	}//while 1
+	}//for all barrels
+}
+
+//calls the main
+jDropLastWindow();
+main();

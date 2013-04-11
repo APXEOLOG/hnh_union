@@ -1,0 +1,35 @@
+//#! name = CellarDigger
+//#! uniq = cellardigger_apxproductions
+
+include("jBotAPI");
+
+function main() {
+	var cellar_door = jFindObjectByName("arch/door-cellar", 10);
+	if (cellar_door == 0) return;
+	while (true) {
+		drinkWater();
+		jDoClick(cellar_door, 3, 0);
+		jWaitProgress(1000 * 60 * 10);
+		jOffsetClick(jCoord(1, 1), 3, 0);
+		jWaitMove(1000 * 60);
+		var bumling = jFindObjectByName("bumlings/02", 10);
+		while (bumling != 0) {
+			drinkWater();
+			jDoClick(bumling, 3, 0);
+			if (jWaitPopup(actionTimeout)) {
+				jSelectContextMenu("Chip stone");
+				jWaitStartProgress();
+				while (jHaveHourglass()) {
+					var stones = inventory.getItems("stone");
+					for (var i = 0; i < stones.length; i++) {
+						stones[i].drop();
+					}
+					jSleep(1000);
+				}
+			}
+			bumling = jFindObjectByName("bumlings/02", 10);
+		}
+	}
+}
+
+main();

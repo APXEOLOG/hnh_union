@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="classes" path="src"/>
+	<classpathentry kind="var" path="JRE_LIB" rootpath="JRE_SRCROOT" sourcepath="JRE_SRC"/>
+	<classpathentry kind="lib" path="D:/_dev/_java-workspace/_hnh_union/trunk/hnh_union/lib/jogl.jar"/>
+	<classpathentry kind="lib" path="D:/_dev/_java-workspace/_hnh_union/trunk/hnh_union/lib/gluegen-rt.jar"/>
+	<classpathentry kind="lib" path="D:/_dev/_java-workspace/_hnh_union/trunk/hnh_union/lib/jnlp.jar"/>
+	<classpathentry kind="lib" path="D:/_dev/_java-workspace/_hnh_union/trunk/hnh_union/lib/jorbis.jar"/>
+	<classpathentry kind="lib" path="D:/_dev/_java-workspace/_hnh_union/trunk/hnh_union/lib/jogg.jar"/>
+	<classpathentry kind="lib" path="D:/_dev/_java-workspace/_hnh_union/trunk/hnh_union/lib/js-14.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

@@ -1,0 +1,193 @@
+<?xml version="1.0" ?>
+
+<project name="hnh_union" default="default">
+
+	<target name="haven-client">
+		<!--<delete dir="classes"/>-->
+		<mkdir dir="build" />
+		<mkdir dir="classes" />
+		<mkdir dir="classes/haven" />
+		<javac srcdir="src" destdir="classes" debug="on" encoding="UTF-8" source="1.5" target="1.5" includeantruntime="no">
+			<classpath>
+				<pathelement path="lib/jogl.jar" />
+				<pathelement path="lib/gluegen-rt.jar" />
+				<pathelement path="lib/jnlp.jar" />
+				<pathelement path="lib/jorbis.jar" />
+				<pathelement path="lib/jogg.jar" />
+				<pathelement path="lib/js-14.jar" />
+			</classpath>
+			<compilerarg value="-Xlint:unchecked" />
+			<!-- <compilerarg value="-Xbarda" /> -->
+		</javac>
+		<copy todir="classes/haven" file="etc/ressrv.crt" />
+		<copy todir="classes/haven" file="etc/authsrv.crt" />
+		<copy todir="classes/haven" file="etc/res-preload" />
+		<copy todir="classes/haven" file="etc/res-bgload" />
+		<copy todir="classes/haven" file="etc/icon.png" />
+	</target>
+
+	<target name="jar" depends="haven-client">
+		<jar destfile="build/haven.jar" basedir="classes">
+			<manifest>
+				<attribute name="Main-Class" value="haven.MainFrame" />
+				<attribute name="Class-Path" value="jogl.jar gluegen-rt.jar haven-res.jar js-14.jar jogg.jar jorbis.jar" />
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="jars" depends="jar">
+		<copy todir="build">
+			<fileset dir="lib">
+				<include name="jogg.jar" />
+				<include name="jnlp.jar" />
+				<include name="jorbis.jar" />
+				<include name="jogl.jar" />
+				<include name="gluegen-rt.jar" />
+				<include name="haven-res.jar" />
+				<include name="js-14.jar" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="dll_32" depends="jar">
+		<copy todir="build">
+			<fileset dir="dll/32">
+				<include name="*.dll" />
+				<exclude name="*.svn" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="dll_64" depends="jar">
+		<copy todir="build">
+			<fileset dir="dll/64">
+				<include name="*.dll" />
+				<exclude name="*.svn" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="resources">
+		<mkdir dir="build/res" />
+		<copy todir="build/res">
+			<fileset dir="res/compiled">
+				<exclude name="*.svn" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="libs">
+		<copy todir="release_build">
+			<fileset dir="lib">
+				<include name="jorbis.jar" />
+				<include name="jogg.jar" />
+				<include name="jnlp.jar" />
+				<include name="jogl.jar" />
+				<include name="gluegen-rt.jar" />
+				<include name="haven-res.jar" />
+				<include name="js-14.jar" />
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="release_full_32" depends="release_update, libs">
+		<copy todir="release_build">
+			<fileset dir="dll/32">
+				<include name="*.dll" />
+				<exclude name="*.svn" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="release_full_64" depends="release_update, libs">
+		<copy todir="release_build">
+			<fileset dir="dll/64">
+				<include name="*.dll" />
+				<exclude name="*.svn" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="release_full_linux32" depends="release_update, libs">
+		<copy todir="release_build">
+			<fileset dir="dll/linux32">
+				<include name="*.so" />
+				<exclude name="*.svn" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="release_full_linux64" depends="release_update, libs">
+		<copy todir="release_build">
+			<fileset dir="dll/linux64">
+				<include name="*.so" />
+				<exclude name="*.svn" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="release_full_macosx_ppc" depends="release_update, libs">
+		<copy todir="release_build">
+			<fileset dir="dll/macosx-ppc">
+				<include name="*.jnilib" />
+				<exclude name="*.svn" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="release_full_macosx_universal" depends="release_update, libs">
+		<copy todir="release_build">
+			<fileset dir="dll/macosx-universal">
+				<include name="*.jnilib" />
+				<exclude name="*.svn" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="release_update" depends="jar, docs">
+		<delete dir="release_build" />
+		<mkdir dir="release_build" />
+		<mkdir dir="release_build/res" />
+		<mkdir dir="release_build/docs" />
+		<mkdir dir="release_build/scripts" />
+		<copy todir="release_build/docs">
+			<fileset dir="docs/javadoc/">
+				<exclude name="*.svn" />
+			</fileset>
+		</copy>
+		<copy todir="release_build/res">
+			<fileset dir="res/compiled">
+				<exclude name="*.svn" />
+			</fileset>
+		</copy>
+		<copy todir="release_build">
+			<fileset dir="build">
+				<include name="haven.jar" />
+			</fileset>
+			<fileset dir="etc/needed">
+				<include name="*.*" />
+				<exclude name="*.svn" />
+			</fileset>
+		</copy>
+		<copy todir="release_build/scripts">
+			<fileset dir="scripts">
+				<include name="*.jbot" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="docs">
+		<mkdir dir="docs/javadoc" />
+		<javadoc
+			Encoding="UTF-8"
+			docencoding="UTF-8" 
+			destdir="docs/javadoc" 
+			stylesheetfile="docs/stylesheet.css"
+			charset="UTF-8"
+			sourcefiles="src\union\jsbot\*.java"
+			access="public">
+		</javadoc>
+	</target>
+
+	<target name="default" depends="jars, dll_64, resources, docs" />
+</project>
