@@ -111,6 +111,11 @@ public class Partyview extends Widget {
 		}
 		sz.y = MainFrame.getScreenSize().y - c.y;
 	}
+	
+	public void leaveParty() {
+		if (leave != null)
+			leave.click();
+	}
 
 	public void wdgmsg(Widget sender, String msg, Object... args) {
 		if (sender == leave) {

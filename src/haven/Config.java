@@ -105,6 +105,7 @@ public class Config {
 	public static boolean toggleCA; //Kerri: criminal acts
 	public static boolean toggleTR; //Kerri: tracking
 	public static boolean toggleCL; //Kerri: claims
+	public static boolean tileAA; //Kerri: tile anti alliasing
 	public static boolean showDayTime;
 	public static boolean sshot_compress;
 	public static boolean sshot_noui;
@@ -112,7 +113,10 @@ public class Config {
 	public static boolean newclaim;
 	public static boolean showq;
 	public static boolean showpath;
-	public static Color hideColor = new Color(255, 0, 0, 128);
+	public static boolean showpathAll;
+	public static boolean showFlavors;
+	public static boolean drawIcons;
+	public static Color hideColor;
 	public static int hideAlpha;
 	//FUKKEN SCENTS!!!
 	public static boolean hideTressp;
@@ -434,6 +438,10 @@ public class Config {
 		newclaim = options.getProperty("newclaim", "true").equals("true");
 		showq = options.getProperty("showq", "true").equals("true");
 		showpath = options.getProperty("showpath", "false").equals("true");
+		showFlavors = options.getProperty("showFlavors", "false").equals("true");
+		showpathAll = options.getProperty("showpathAll", "false").equals("true");
+		tileAA = options.getProperty("tileAA", "false").equals("true"); // Kerri
+		drawIcons = options.getProperty("drawIcons", "false").equals("true"); // Kerri
 		// Kerri
 		hideTressp = options.getProperty("hideTressp", "false").equals("true");
 		hideTheft = options.getProperty("hideTheft", "false").equals("true");
@@ -549,12 +557,16 @@ public class Config {
 		options.setProperty("toggleCA", toggleCA ? "true" : "false"); // Kerri
 		options.setProperty("toggleTR", toggleTR ? "true" : "false"); // Kerri
 		options.setProperty("toggleCL", toggleCL ? "true" : "false"); // Kerri
+		options.setProperty("tileAA", tileAA ? "true" : "false"); // Kerri
+		options.setProperty("srawIcons", drawIcons ? "true" : "false"); // Kerri
 		options.setProperty("sshot_compress", sshot_compress ? "true" : "false");
 		options.setProperty("sshot_noui", sshot_noui ? "true" : "false");
 		options.setProperty("sshot_nonames", sshot_nonames ? "true" : "false");
 		options.setProperty("newclaim", newclaim ? "true" : "false");
 		options.setProperty("showq", showq ? "true" : "false");
 		options.setProperty("showpath", showpath ? "true" : "false");
+		options.setProperty("showFlavors", showFlavors ? "true" : "false");
+		options.setProperty("showpathAll", showpathAll ? "true" : "false");
 		//
 		options.setProperty("hideTressp", hideTressp ? "true" : "false");
 		options.setProperty("hideTheft", hideTheft ? "true" : "false");

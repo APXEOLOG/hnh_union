@@ -203,6 +203,26 @@ public class GOut {
 		gl.glEnd();
 		checkerr();
 	}
+	
+	public void ftriangle(Coord center, int size) {
+		if (size < 1)
+			return;
+		double sqrt3 = Math.sqrt(3);
+		double Orad = (sqrt3 * size)/3;
+		double Irad = (sqrt3 * size)/6;
+		Coord c1, c2, c3;
+		c1 = new Coord(center.x, center.y - (int)Orad);
+		c2 = new Coord(center.x + (int)(size / 2) - 1, center.y + (int)Irad);
+		c3 = new Coord(center.x - (int)(size / 2) + 1, center.y + (int)Irad);
+		glcolor();
+		texsel(-1);
+		gl.glBegin(GL.GL_TRIANGLE_STRIP);
+		vertex(c1);
+		vertex(c2);
+		vertex(c3);
+		gl.glEnd();
+		checkerr();
+	}
 
 	public void fellipse(Coord c, Coord r, int a1, int a2) {
 		glcolor();

@@ -44,7 +44,7 @@ public class CharWnd extends Window {
 	SkillList psk, nsk;
 	SkillInfo ski;
 	FoodMeter foodm;
-	Study study;
+	public static Study study;
 	Map<String, Attr> attrs = new TreeMap<String, Attr>();
 	public static final Tex missing = Resource.loadtex("gfx/invobjs/missing");
 	public static final Tex foodmimg = Resource.loadtex("gfx/hud/charsh/foodm");
@@ -597,26 +597,30 @@ public class CharWnd extends Window {
 	}
 
 	public class Study extends Widget {
-		Label attlbl;
+		Label attlbl, lplabel;
 		Window wnd;
 		boolean svis, attached = true;
-		private Coord detsz = new Coord(110, 130);
+		private Coord detsz = new Coord(110, 150);
 		private Coord detc = new Coord(-145, -75);
 		int attlimit, attused = 0;
+		long studylp;
 
 		public Study(Widget parent) {
-			super(Coord.z, new Coord(400, 275), parent);
+			super(Coord.z, new Coord(400, 295), parent);
 			ui.wnd_study = this;
 			Foundry fnd = new Foundry(new Font("SansSerif", Font.PLAIN, 12));
 			new Label(new Coord(138, 202), this, "Attention:", fnd);
+			new Label(new Coord(138, 222), this, "Study LP:", fnd);
 			attlimit = ui.sess.glob.cattr.get("intel").comp;
 			attlbl = new Label(new Coord(200, 202), this, "", fnd);
+			lplabel = new Label(new Coord(200, 222), this, "", fnd);
 
 			canhastrash = false;
 			visible = false;
 		}
-
+		
 		private void upd() {
+			lplabel.settext(String.valueOf(studylp));
 			attlbl.settext(attused + "/" + attlimit);
 			attlbl.c.x = 263 - attlbl.sz.x;
 		}
@@ -675,6 +679,24 @@ public class CharWnd extends Window {
 
 		public void setattnused(int val) {
 			attused = val;
+			upd();
+		}
+		
+		public void updateStudyLp() {
+			studylp = 0;
+			for (Widget wdg = this.child; wdg != null; wdg = wdg.next) {
+				if (wdg instanceof Inventory) {
+					Inventory sinv = (Inventory) wdg;
+					for (Widget sitem = sinv.child; sitem != null; sitem = sitem.next) {
+						if (sitem instanceof Item) {
+							Item it = (Item) sitem;
+							if (((Item) sitem).curio_stat == null)
+								continue;
+							studylp += Math.round(it.curio_stat.baseLP * it.qmult * UI.instance.wnd_char.getExpMode());
+						}
+					}
+				}
+			}
 			upd();
 		}
 	}
@@ -897,6 +919,7 @@ public class CharWnd extends Window {
 			updexp();
 		} else if (msg == "studynum") {
 			study.setattnused((Integer) args[0]);
+			study.updateStudyLp();
 		} else if (msg == "reset") {
 			updexp();
 		} else if (msg == "nsk") {

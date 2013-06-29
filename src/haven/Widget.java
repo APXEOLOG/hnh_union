@@ -34,7 +34,10 @@ import java.awt.event.KeyEvent;
 public class Widget {
 	public UI ui;
 	public Coord c, sz, hsz;
-	public Widget next, prev, child, lchild, parent;
+	public Widget next, prev;
+	public Widget child;
+	public Widget lchild;
+	public Widget parent;
 	boolean focustab = false, focusctl = false, hasfocus = false;
 	public boolean visible = true;
 	private boolean canfocus = false, autofocus = false;

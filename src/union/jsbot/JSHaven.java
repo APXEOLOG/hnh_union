@@ -98,9 +98,9 @@ public class JSHaven {
 	 * Да здравствует стильный и молодежный j-префикс! 
 	 * Свершилось то, чего вы так давно ждали, больше никаких хавен..... и мап.....
 	 * Теперь наш бот будет самым охуенным ботом в хахачике!
-	 * И не важно что в яве половина функций будет обернута через хуйпизду и
+	 * � не важно что в яве половина функций будет обернута через хуйпизду и
 	 * тупой рино не поддерживает недефолтные аргументы, чтоб он сдох!!11
-	 * И вообще педикам молчать и кодить в тряпочкэ!
+	 * � вообще педикам молчать и кодить в тряпочкэ!
 	 * 
 	 * *******************************************************************
 	 * Попизди мне тут!
@@ -117,7 +117,7 @@ public class JSHaven {
 	}
 
 	/**
-	 * Функция создает окно "ввода". Используется для ввода текстового или числового значения.
+	 * Функция создает окно "ввода". �спользуется для ввода текстового или числового значения.
 	 * @param x координата x для отрисовки окна на экране
 	 * @param y координата y для отрисовки окна на экране
 	 * @param header заголовок окна
@@ -162,6 +162,14 @@ public class JSHaven {
 	 */
 	public static JSWindow jGetWindow(String name) {
 		return JSBotUtils.getWindow(name);
+	}
+	
+	/**
+	 * Возвращает стадик персонажа, с котороым можно работать как с обычным инвентарем
+	 * @return объект типа JSInventory
+	 */
+	public static JSInventory jGetStudy() {
+		return JSBotUtils.getStudy();
 	}
 
 	/**
@@ -270,7 +278,7 @@ public class JSHaven {
 	/**
 	 * Функция получает значение счетчика верования для определенного параметра
 	 * Окно белифсов должно быть открыто
-	 * @param name Имя белифса. Допустимые значения: life, night, civil, nature, martial, change
+	 * @param name �мя белифса. Допустимые значения: life, night, civil, nature, martial, change
 	 * @return Возвращает значение -5...5 в случае успеха или -255 в случае ошибки.
 	 */
 	public static int jGetBelief(String name) {
@@ -279,7 +287,7 @@ public class JSHaven {
 
 	/**
 	 * Функция двигает ползунок белифсов. Окно белифсов должно быть открыто
-	 * @param name Имя белифса. Допустимые значения: life, night, civil, nature, martial, change
+	 * @param name �мя белифса. Допустимые значения: life, night, civil, nature, martial, change
 	 * @param val Значение. Должно быть -1...1
 	 * @return true в случае успеха, иначе false
 	 */
@@ -479,6 +487,9 @@ public class JSHaven {
 		}
 	}
 	
+	/**
+	 * Закрывает окно крафта
+	 */
 	public static void jCloseCraft() {
 		if(UI.instance.make_window != null)
 			UI.instance.make_window.closeMe();
@@ -536,6 +547,14 @@ public class JSHaven {
 	 */
 	public static boolean jHaveHourglass() {
 		return JSBotUtils.hourGlass;
+	}
+	
+	/**
+	 * Проверяет наличие прогресса
+	 * @return
+	 */
+	public static boolean jHaveProgress() {
+		return jHaveHourglass();
 	}
 
 	/**
@@ -604,6 +623,14 @@ public class JSHaven {
 	 */
 	public static int jGetMyID() {
 		return JSBotUtils.playerID;
+	}
+	
+	/**
+	 * Возвращает объект персонажа в качестве JSGob
+	 * @return
+	 */
+	public static JSGob jGetMyGob() {
+		return new JSGob(jGetMyID());
 	}
 
 	/**
@@ -934,8 +961,13 @@ public class JSHaven {
 		return JSBotUtils.tileType(c.x, c.y);
 	}
 	
-	public static int jAbsTileType(Object offset) {
-		Coord c = unWrapCoord(offset);
+	/**
+	 * Возвращает тип тайла по абсолютным координатам
+	 * @param absCoord абсолютные координаты
+	 * @return тип тайла
+	 */
+	public static int jAbsTileType(Object absCoord) {
+		Coord c = unWrapCoord(absCoord);
 		return JSBotUtils.absTileType(c.x, c.y);
 	}
 
@@ -1153,6 +1185,16 @@ public class JSHaven {
 	}
 	
 	/**
+	 * Возвращает абсолютные координаты ближайшего тайла с указанным типом
+	 * @param raduis радиус поиска в тайлах
+	 * @param type тип тайла
+	 * @return абсолютные координаты тайла
+	 */
+	public static Coord jGetNearestTileAbs(int raduis, int type) {
+		return jMyCoords().add(jGetNearestTileCoord(raduis, type).mul(11));
+	}
+	
+	/**
 	 * Возвращает координаты оффсета в тайлах ближайшего тайла с указанным
 	 * типом
 	 * 
@@ -1236,7 +1278,7 @@ public class JSHaven {
 	}
 	
 	/*
-	 * ГУЙОВЫЕ НИШТЯКИ И ПРОФИТ!!!1111
+	 * ГУЙОВЫЕ Н�ШТЯК� � ПРОФ�Т!!!1111
 	 * Афигенные штуки епт
 	 */
 	/**
@@ -1350,7 +1392,7 @@ public class JSHaven {
 	
 	/**
 	 * Возвращает имя текущего выделенного кина 
-	 * @return Имя кина
+	 * @return имя кина
 	 */
 	public static String jBuddyDumpCurrentName() {
 		return BuddyWnd.instance.dumpCurrentSelectedName();
@@ -1430,12 +1472,36 @@ public class JSHaven {
 		return false;
 	}
 	
+	/**
+	 * Возвращает версию клиента
+	 * @return версия клиента
+	 */
 	public static String jGetVersion() {
 		return MainFrame.hhVersion;
 	}
 	
+	/**
+	 * Возвращает объект в указанном радиусе от абсолютных координат
+	 * @param coord абсолютные координаты
+	 * @param radius радиус поиска объекта от абсолютных координат (в точках)
+	 * @param name имя объекта
+	 * @return
+	 */
 	public static JSGob jFindMapObjectNearAbs(Object coord, int radius, String name) {
 		return JSBotUtils.findMapObjectAbs(name, radius, unWrapCoord(coord));
 	}
+	
+	/**
+	 * Выходит из пати, если оно было
+	 */
+	public static void jLeaveParty() {
+		if (jHaveParty())
+			JSBotUtils.leaveParty();
+	}
+	
+	//tests
+	/*public static int jShopCount() {
+		return JSBotUtils.shopBoxCount();
+	}*/
 	
 }//Static haven

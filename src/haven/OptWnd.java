@@ -64,9 +64,9 @@ public class OptWnd extends Window {
     }
 
     public OptWnd(Coord c, Widget parent) {
-	super(c, new Coord(400, 445), parent, "Options");
+	super(c, new Coord(400, 540), parent, "Options");
 
-	body = new Tabs(Coord.z, new Coord(400, 445), this) {
+	body = new Tabs(Coord.z, new Coord(400, 540), this) {
 	    public void changed(Tab from, Tab to) {
 		Utils.setpref("optwndtab", to.btn.text.text);
 		from.btn.c.y = 0;
@@ -170,12 +170,26 @@ public class OptWnd extends Window {
 		}
 	    }).a = Config.showq;
 	    
-	    (new CheckBox(new Coord(10, 410), tab, "Show player path") {
+	    (new CheckBox(new Coord(10, 410), tab, "Show moving path") {
 		public void changed(boolean val) {
 		    Config.showpath = val;
 		    Config.saveOptions();
 		}
 	    }).a = Config.showpath;
+	    
+	    (new CheckBox(new Coord(10, 445), tab, "Show other gobs path (only if MP ON)") {
+			public void changed(boolean val) {
+			    Config.showpathAll = val;
+			    Config.saveOptions();
+			}
+		}).a = Config.showpathAll;
+	    
+	    (new CheckBox(new Coord(10, 480), tab, "Use AA tiles") {
+			public void changed(boolean val) {
+			    Config.tileAA = val;
+			    Config.saveOptions();
+			}
+		 }).a = Config.tileAA;
 	    
 	    //Kerri: was fast menu
 	    (new CheckBox(new Coord(220, 130), tab, "Highlight objects by mouse") {
@@ -240,6 +254,13 @@ public class OptWnd extends Window {
 		    Config.saveOptions();
 		}
 	    }).a = Config.autoSaveMinimaps;
+	    
+	    (new CheckBox(new Coord(220, 445), tab, "Draw higlighted herbs as icons") {
+			public void changed(boolean val) {
+			    Config.drawIcons = val;
+			    Config.saveOptions();
+			}
+		}).a = Config.drawIcons;
 	    
 	    Widget editbox = new Frame(new Coord(310, 30), new Coord(90, 100), tab);
 	    new Label(new Coord(20, 10), editbox, "Edit mode:");
@@ -416,7 +437,7 @@ public class OptWnd extends Window {
 		    { "Plants", "gfx/terobjs/plants" },
 		    { "Trees", "gfx/terobjs/trees" },
 		    { "Stones", "gfx/terobjs/bumlings" },
-		    { "Flavor objects", "flavobjs" },
+		    /*{ "Flavor objects", "flavobjs" },*/
 		    { "Bushes", "gfx/tiles/wald" },
 		    { "Thicket", "gfx/tiles/dwald" },
 		    { "Ridges", "gfx/terobjs/ridges/grass/" }, 
@@ -529,6 +550,11 @@ public class OptWnd extends Window {
 			    Config.hideMurd = val;
 			    Config.saveOptions();
 			}}).a = Config.hideMurd;
+	    (new CheckBox(new Coord(10, 410), tab, "Show flavors (need restart)") {
+			public void changed(boolean val) {
+			    Config.showFlavors = val;
+			    Config.saveOptions();
+			}}).a = Config.showFlavors;
 	}
 
 	{ /* TRANSLATE OPTIONS TAB */
@@ -562,7 +588,7 @@ public class OptWnd extends Window {
 	    new Label(new Coord(100, 190), tab, "Powered by Google Translate");
 	}
 
-	new Frame(new Coord(-10, 20), new Coord(420, 430), this);
+	new Frame(new Coord(-10, 20), new Coord(420, 525), this);
 	String last = Utils.getpref("optwndtab", "");
 	for (Tabs.Tab t : body.tabs) {
 	    if (t.btn.text.text.equals(last))

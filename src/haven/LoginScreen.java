@@ -27,8 +27,14 @@
 package haven;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
+
 import union.APXUtils;
+import union.APXUtils.AccountInfo;
 
 public class LoginScreen extends Widget {
 	Login cur;
@@ -50,6 +56,12 @@ public class LoginScreen extends Widget {
 	static LoginScreen instance;
 	public static ArrayList<Button> login_btns = new ArrayList<Button>();
 	public static ArrayList<Button> del_btns = new ArrayList<Button>();
+	
+	static Comparator<AccountInfo> comparator = new Comparator<AccountInfo>() {
+	    public int compare(AccountInfo c1, AccountInfo c2) {
+	        return c1.login.compareToIgnoreCase(c2.login);
+	    }
+	};
 
 	
 	public static void spawnLoginButtons() {
@@ -68,8 +80,12 @@ public class LoginScreen extends Widget {
 
 		int i = 0;
 		int j = 0;
-		Iterator<APXUtils.AccountInfo> iterator = APXUtils.accounts.values()
-				.iterator();
+		
+		Collection<AccountInfo> accColl = APXUtils.accounts.values();
+		List<AccountInfo> accList = new ArrayList<AccountInfo>(accColl);
+		Collections.sort(accList, comparator);
+		
+		Iterator<APXUtils.AccountInfo> iterator = accList.iterator();
 		while (iterator.hasNext()) {
 			if(j == 20) j = 0;
 			APXUtils.AccountInfo info = iterator.next();

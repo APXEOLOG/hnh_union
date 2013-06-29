@@ -3,6 +3,7 @@ package union.jsbot;
 import haven.Button;
 import haven.Inventory;
 import haven.Label;
+import haven.TextEntry;
 import haven.UI;
 import haven.VMeter;
 import haven.Widget;
@@ -89,6 +90,66 @@ public class JSWindow {
 					Button b = (Button) i;
 					b.click();
 					break;
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Возвращает текст из TextEntry в указанной позиции
+	 * @param pos номер позиции поля ввода, начинается с 1
+	 * @return текст из поля ввода
+	 */
+	public String getEntryText(int pos) {
+		int current = 0;
+		for (Widget i = wdg().child; i != null; i = i.next) {
+			if (i instanceof TextEntry) {
+				current++;
+				if (current == pos) {
+					TextEntry te = (TextEntry) i;
+					return te.text;
+				}
+			}
+		}
+		return "";
+	}
+	
+	/**
+	 * Устанавливает текст в TextEntry в указанной позиции
+	 * @param pos номер позиции поля ввода, начинается с 1
+	 * @param text текст для TextEntry
+	 */
+	public void setEntryText(String text, int pos) {
+		int current = 0;
+		for (Widget i = wdg().child; i != null; i = i.next) {
+			if (i instanceof TextEntry) {
+				current++;
+				if (current == pos) {
+					TextEntry te = (TextEntry) i;
+					te.settext(text);
+					return;
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Активирует TextEntry в окне в указанной позиции
+	 * @param text текст отправляемый на сервер, если указана пустая строка, то отправляется текущий текст поля ввода
+	 * @param pos позиция поля ввода в окне, нумерация с 1
+	 */
+	public void activateEntry(String text, int pos) {
+		int current = 0;
+		for (Widget i = wdg().child; i != null; i = i.next) {
+			if (i instanceof TextEntry) {
+				current++;
+				if (current == pos) {
+					TextEntry te = (TextEntry) i;
+					if (text.equals(""))
+						te.activate(te.text);
+					else
+						te.activate(text);
+					return;
 				}
 			}
 		}

@@ -57,7 +57,7 @@ public class UI {
 	public Map<Integer, Widget> widgets = new TreeMap<Integer, Widget>();
 	public Map<Widget, Integer> rwidgets = new HashMap<Widget, Integer>();
 	private Receiver rcvr;
-	public Coord mc, lcc = Coord.z;
+	public Coord mc = new Coord(0, 0), lcc = Coord.z; // There was an epic bug with uninitialized "mc"
 	public Session sess;
 	public IHWindowParent chat;
 	

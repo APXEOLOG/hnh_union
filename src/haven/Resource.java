@@ -280,6 +280,12 @@ public class Resource implements Comparable<Resource>, Prioritized,
 	public static int numloaded() {
 		return (cache.size());
 	}
+	
+	public static boolean isCached(String name) {
+		if (cache.containsKey(name))
+			return true;
+		return false;
+	}
 
 	public static Collection<Resource> cached() {
 		return (cache.values());
@@ -832,7 +838,9 @@ public class Resource implements Comparable<Resource>, Prioritized,
 			int[] off = new int[1];
 			off[0] = 0;
 			fl = Utils.ub(buf[off[0]++]);
-			int flnum = Utils.uint16d(buf, off[0]);
+			int flnum = 0;
+			if (Config.showFlavors)
+				flnum = Utils.uint16d(buf, off[0]);
 			off[0] += 2;
 			flavprob = Utils.uint16d(buf, off[0]);
 			off[0] += 2;

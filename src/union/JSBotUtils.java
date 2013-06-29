@@ -89,6 +89,24 @@ public class JSBotUtils {
 			updateMeters();
 		}
 	}
+	
+	//sort of test
+	public static int shopBoxCount() {
+		int count = 0;
+		Widget root = UI.instance.root;
+		for (Widget wdg = root.child; wdg != null; wdg = wdg.next) {
+			if (wdg instanceof Window) {
+				for(Widget w = wdg.child; w != null; w = w.next) {
+					if(w instanceof Shopbox)
+						count++;
+				}
+			}
+				/*if (((Window) wdg).cap.text.equals(name)) {
+					return new JSWindow(UI.instance.getId(wdg));
+				}*/
+		}
+		return count;
+	}
 
 	/* End of remote widget handlers */
 
@@ -181,6 +199,17 @@ public class JSBotUtils {
 
 	// Kerrigan's block
 	// You may change it, but you will die.
+	
+	// leaves party
+	public static void leaveParty() {
+		Widget root = UI.instance.root;
+		for (Widget wdg = root.child; wdg != null; wdg = wdg.next) {
+			if (wdg instanceof Partyview) {
+				((Partyview)wdg).leaveParty();
+				return;
+			}
+		}
+	}
 
 	// buddy
 	public static boolean buddyAct(String charname, String action) {
@@ -644,6 +673,15 @@ public class JSBotUtils {
 		}
 		return false;
 	}
+	
+	public static JSInventory getStudy() {
+		//if (CharWnd.Study.getInventory() != null)
+		for (Widget wdg = CharWnd.study.child; wdg != null; wdg = wdg.next) {
+			if (wdg instanceof Inventory)
+				return new JSInventory(UI.instance.getId(wdg));
+		}
+		return null;
+	}
 
 	// ISbox (build window) tooltip
 	public static String getISBoxValue(String wnd, int pos, int type) {
@@ -735,7 +773,7 @@ public class JSBotUtils {
 						if (img instanceof Img) {
 							Img i = (Img) img;
 							if (i != null) {
-								if(i.textureName.contains("/invsq")) continue;
+								//if(i.textureName.contains("/invsq")) continue;
 								imgPos++;
 								if (imgPos == pos) {
 									i.wdgmsg("click", new Coord(0, 0), button, mod);

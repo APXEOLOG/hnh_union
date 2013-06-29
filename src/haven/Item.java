@@ -272,7 +272,7 @@ public class Item extends Widget implements DTarget {
 		return null;
 	}
 
-	private double qmult;
+	public double qmult;
 	private String FEP = null;
 
 	private void calcFEP() {
@@ -392,7 +392,7 @@ public class Item extends Widget implements DTarget {
 		}
 	}
 
-	private Config.CuriosityStat curio_stat = null;
+	public Config.CuriosityStat curio_stat = null;
 	
 	public Item(Coord c, Indir<Resource> res, int q, Widget parent, Coord drag,
 			int num) {

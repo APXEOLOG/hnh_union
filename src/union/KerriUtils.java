@@ -8,10 +8,14 @@ import haven.Gob;
 import haven.IButton;
 import haven.Resource;
 import haven.Session;
+import haven.Tex;
+import haven.TexI;
 import haven.UI;
 import haven.INIFile.Pair;
+import haven.Resource.Image;
 
 import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 
@@ -113,9 +117,9 @@ public class KerriUtils {
 				Coord ptc = arg.fst.div(tileSize).add(tc.inv())
 						.add(hsz.div(2));
 				g.chcolor(Color.BLACK);
-				g.fellipse(ptc, new Coord(5, 5));
+				g.ftriangle(ptc, 11);
 				g.chcolor(arg.snd);
-				g.fellipse(ptc, new Coord(3, 3));
+				g.ftriangle(ptc, 8);
 				g.chcolor();
 			}
 		}
@@ -136,6 +140,25 @@ public class KerriUtils {
 			}
 		}
 	}
+	
+	//draw herbs at minimap
+		public static void drawHerbsMinimap(GOut g, Coord tc, Coord hsz) {
+			if(UI.instance.minimap == null) return;
+			synchronized (UI.instance.minimap.hherbs) {
+				for (Pair<Coord, String> arg : UI.instance.minimap.hherbs) {
+					Coord ptc = arg.fst.div(tileSize).add(tc.inv())
+							.add(hsz.div(2));
+					g.chcolor(Color.GRAY);
+					g.fellipse(ptc, new Coord(10, 10));
+					g.chcolor();
+					//drawing icon
+					String resn = arg.snd;
+					Resource res = Resource.load(resn);
+					res.loadwait();
+					g.image(res.layer(Resource.imgc).tex(), ptc.sub(new Coord(10, 10)), new Coord(20, 20));
+				}
+			}
+		}
 	
 	//draw vision square
 	public static void drawVisSquare(GOut g, Coord tc, Coord hsz) {

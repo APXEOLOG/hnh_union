@@ -107,6 +107,11 @@ public class ChatHW extends HWindow {
 		newmsg = false;
 		return lastString;
 	}
+	
+	public void closeChat() {
+		if (cbtn != null)
+			cbtn.click();
+	}
 
 	public void uimsg(String msg, Object... args) {
 		if (msg == "log") {

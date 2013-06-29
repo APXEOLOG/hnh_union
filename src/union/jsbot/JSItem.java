@@ -21,6 +21,56 @@ public class JSItem {
 	public int quality() {
 		return wdg().quality;
 	}
+	
+	/**
+	 * Возвращает аттеншн курьеза
+	 * @return attention или -1
+	 */
+	public int curioAttention() {
+		if (wdg().curio_stat != null)
+			return wdg().curio_stat.attention;
+		return -1;
+	}
+	
+	/**
+	 * Возвращает время изучения курьеза
+	 * @return время изучения или -1
+	 */
+	public int curioStudyTime() {
+		if (wdg().curio_stat != null)
+			return wdg().curio_stat.studyTime;
+		return -1;
+	}
+	
+	/**
+	 * Возвращает множитель вещи в зависимости от качества
+	 * @return
+	 */
+	public double multiply() {
+		return wdg().qmult;
+	}
+	
+	/**
+	 * Возвращает базовое лп курьеза, работает с теми что описаны в curio.conf
+	 * @return базовое лп курьеза или -1
+	 */
+	public double baseCurioLP() {
+		if (wdg().curio_stat != null) {
+			return wdg().curio_stat.baseLP;
+		}
+		return -1;
+	}
+	
+	/**
+	 * Возвращает лп курьеза зависящее от множителя и текущего ла, работает с теми что описаны в curio.conf
+	 * @return текущее лп курьеза или -1
+	 */
+	public long currentCurioLP() {
+		if (wdg().curio_stat != null) {
+			return Math.round(wdg().curio_stat.baseLP * wdg().qmult * UI.instance.wnd_char.getExpMode());
+		}
+		return -1;
+	}
 
 	/**
 	 * Возвращает имя вещи (полный тултип без имени русерса)

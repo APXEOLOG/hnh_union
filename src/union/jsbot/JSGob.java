@@ -62,7 +62,9 @@ public class JSGob {
 	 * @return переменная типа Coord, содержащяа размеры хитбокса
 	 */
 	public Coord negSize() {
-		return gob().getneg().sz;
+		if (gob().getneg() != null)
+			return gob().getneg().bs;
+		return new Coord(0, 0);
 	}
 	
 	/**

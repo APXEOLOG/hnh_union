@@ -37,6 +37,13 @@ public class JSChat {
 	public boolean haveNewMessage() {
 		return wdg().hasNewMessage();
 	}
+	
+	/**
+	 * Закрывает текущий чат
+	 */
+	public void closeChat() {
+		wdg().closeChat();
+	}
 
 	/**
 	 * Возвращает посленее пришедшее сообщение

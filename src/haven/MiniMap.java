@@ -66,7 +66,7 @@ public class MiniMap extends Widget {
 	public static final Tex bg = Resource.loadtex("gfx/hud/mmap/ptex");
 	public static final Tex nomap = Resource.loadtex("gfx/hud/mmap/nomap");
 	public static final Resource plx = Resource.load("gfx/hud/mmap/x");
-	public Coord off, doff;
+	public Coord off = new Coord(0, 0), doff = new Coord(0, 0);
 	boolean hidden = false, grid = false;;
 	MapView mv;
 	boolean dm = false;
@@ -75,6 +75,7 @@ public class MiniMap extends Widget {
 
 	/* New minimap functions */
 	public Set<Pair<Coord, Color>> profits = new HashSet<Pair<Coord, Color>>();
+	public Set<Pair<Coord, String>> hherbs = new HashSet<Pair<Coord, String>>();
 	public Set<Pair<Coord, Color>> players = new HashSet<Pair<Coord, Color>>();
 
 	/* End of new functions */
@@ -266,6 +267,13 @@ public class MiniMap extends Widget {
 			return c.mul(getScale());
 		}
 	}
+	
+	private Coord localToReal(Coord lc) {
+		Gob pl = ui.sess.glob.oc.getgob(mv.playergob);
+		if (pl == null) return Coord.z;
+		// MAGIC!~
+		return pl.rc.add(lc.sub(pl.rc.div(tileSize).add(mv.mc.div(tileSize).add(off.div(scales[scale])).inv()).add(sz.div(scales[scale]).div(2))).mul(tileSize));
+	}
 
 	public void draw(GOut og) {
 		double scale = getScale();
@@ -406,6 +414,7 @@ public class MiniMap extends Widget {
 			}
 			if (Config.show_minimap_profits) {
 				KerriUtils.drawProfitMinimap(g, tc, hsz);
+				KerriUtils.drawHerbsMinimap(g, tc, hsz);
 			}
 			if (Config.show_minimap_players) {
 				KerriUtils.drawPlayersAtMinimap(g, tc, hsz);
@@ -453,9 +462,15 @@ public class MiniMap extends Widget {
 
 	public boolean mousedown(Coord c, int button) {
 		if (button == 1) {
-			ui.grabmouse(this);
-			dm = true;
-			doff = c;
+			if (ui.modctrl) {
+				ui.grabmouse(this);
+				dm = true;
+				doff = c;
+			} else {
+				Coord tc = localToReal(c);
+				mv.map_abs_click(tc.x, tc.y, button, 0);
+				return false;
+			}
 		}
 		return (true);
 	}
