@@ -901,7 +901,6 @@ public class MapView extends Widget implements DTarget, Console.Directory {
 			plrad = 0;
 		} else if (msg == "polowner") {
 			String o = ((String) args[0]).intern();
-			APXUtils.onVillageChanged(o);
 			if (o != polowner) {
 				if (o.length() == 0) {
 					if (this.polowner != null)
@@ -1494,15 +1493,17 @@ public class MapView extends Widget implements DTarget, Console.Directory {
 			g.chcolor();
 			//minimap grid
 			g.chcolor(new Color(180, 0, 0));
-			for (Grid grid : map.grids.values()) {
-				Coord gg1 = grid.gc.mul(100, 100).mul(tileSize);
-				Coord gg2 = grid.gc.mul(100, 100).add(100, 0).mul(tileSize);
-				Coord gg3 = grid.gc.mul(100, 100).add(100, 100).mul(tileSize);
-				Coord gg4 = grid.gc.mul(100, 100).add(0, 100).mul(tileSize);
-				g.line(m2s(gg1).add(oc), m2s(gg2).add(oc), 2);
-				g.line(m2s(gg2).add(oc), m2s(gg3).add(oc), 2);
-				g.line(m2s(gg3).add(oc), m2s(gg4).add(oc), 2);
-				g.line(m2s(gg4).add(oc), m2s(gg1).add(oc), 2);
+			synchronized (map.grids) {
+				for (Grid grid : map.grids.values()) {
+					Coord gg1 = grid.gc.mul(100, 100).mul(tileSize);
+					Coord gg2 = grid.gc.mul(100, 100).add(100, 0).mul(tileSize);
+					Coord gg3 = grid.gc.mul(100, 100).add(100, 100).mul(tileSize);
+					Coord gg4 = grid.gc.mul(100, 100).add(0, 100).mul(tileSize);
+					g.line(m2s(gg1).add(oc), m2s(gg2).add(oc), 2);
+					g.line(m2s(gg2).add(oc), m2s(gg3).add(oc), 2);
+					g.line(m2s(gg3).add(oc), m2s(gg4).add(oc), 2);
+					g.line(m2s(gg4).add(oc), m2s(gg1).add(oc), 2);
+				}
 			}
 			g.chcolor();
 		}
@@ -1872,7 +1873,6 @@ public class MapView extends Widget implements DTarget, Console.Directory {
 			if(myCurrentCoord != null && myLastCoord != null)
 				if(myCurrentCoord.dist(myLastCoord) > 30*11 && cam != null) {
 					cam.reset();
-					APXUtils.onBigJumpDetected(polowner);
 				}
 		}
 		myLastCoord = myCurrentCoord;

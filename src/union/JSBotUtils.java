@@ -89,24 +89,6 @@ public class JSBotUtils {
 			updateMeters();
 		}
 	}
-	
-	//sort of test
-	public static int shopBoxCount() {
-		int count = 0;
-		Widget root = UI.instance.root;
-		for (Widget wdg = root.child; wdg != null; wdg = wdg.next) {
-			if (wdg instanceof Window) {
-				for(Widget w = wdg.child; w != null; w = w.next) {
-					if(w instanceof Shopbox)
-						count++;
-				}
-			}
-				/*if (((Window) wdg).cap.text.equals(name)) {
-					return new JSWindow(UI.instance.getId(wdg));
-				}*/
-		}
-		return count;
-	}
 
 	/* End of remote widget handlers */
 
@@ -373,6 +355,11 @@ public class JSBotUtils {
 		if (!havePopupMenu())
 			return false;
 		return UI.instance.popupMenu.haveOpt(txt);
+	}
+	
+	public static void closePopup() {
+		if (havePopupMenu())
+			UI.instance.popupMenu.closeMenu();
 	}
 
 	// sends action
@@ -719,7 +706,8 @@ public class JSBotUtils {
 	public static String getWindowImg(String wnd, int pos) {
 		if (pos < 1)
 			pos = 1;
-		int imgPos = 0;
+		ArrayList<Img> empty = new ArrayList<Img>();
+		ArrayList<Img> full  = new ArrayList<Img>();
 		Widget root = UI.instance.root;
 		for (Widget wdg = root.child; wdg != null; wdg = wdg.next) {
 			if (wdg instanceof Window)
@@ -728,13 +716,24 @@ public class JSBotUtils {
 						if (img instanceof Img) {
 							Img i = (Img) img;
 							if (i != null) {
-								if(i.textureName.contains("/invsq")) continue;
-								imgPos++;
-								if (imgPos == pos) {
-									return i.textureName;
-								}
+								if(i.textureName.contains("/invsq"))
+									empty.add(i);
+								else
+									full.add(i);
 							}
 						}
+		}
+		if (full.size() == 0)
+			return "";
+		if (pos - 1 > empty.size())
+			return "";
+		Img eimg = empty.get(pos-1);
+		Coord epos = eimg.c;
+		Coord esize = eimg.sz;
+		for (int i = 0; i < full.size(); ++i) {
+			Img timg = full.get(i);
+			if(timg.c.isect(epos, esize))
+				return timg.textureName;
 		}
 		return "";
 	}
@@ -764,7 +763,8 @@ public class JSBotUtils {
 	public static void imgClick(String wnd, int pos, int button, int mod) {
 		if (pos < 1)
 			pos = 1;
-		int imgPos = 0;
+		ArrayList<Img> empty = new ArrayList<Img>();
+		ArrayList<Img> full  = new ArrayList<Img>();
 		Widget root = UI.instance.root;
 		for (Widget wdg = root.child; wdg != null; wdg = wdg.next) {
 			if (wdg instanceof Window)
@@ -773,15 +773,24 @@ public class JSBotUtils {
 						if (img instanceof Img) {
 							Img i = (Img) img;
 							if (i != null) {
-								//if(i.textureName.contains("/invsq")) continue;
-								imgPos++;
-								if (imgPos == pos) {
-									i.wdgmsg("click", new Coord(0, 0), button, mod);
-									return;
-								}
+								if(i.textureName.contains("/invsq"))
+									empty.add(i);
+								else
+									full.add(i);
 							}
 						}
 		}
+		Img eimg = empty.get(pos-1);
+		Coord epos = eimg.c;
+		Coord esize = eimg.sz;
+		for (int i = 0; i < full.size(); ++i) {
+			Img timg = full.get(i);
+			if(timg.c.isect(epos, esize)) {
+				timg.wdgmsg("click", new Coord(1, 1), button, mod);
+				return;
+			}
+		}
+		eimg.wdgmsg("click", new Coord(1, 1), button, mod);
 	}
 
 	// not a boolean type

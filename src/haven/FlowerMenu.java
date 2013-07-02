@@ -226,6 +226,11 @@ public class FlowerMenu extends Widget {
 		}
 		return false;
 	}
+	
+	// Kerri:
+	public void closeMenu() {
+		wdgmsg("cl", -1);
+	}
 
 	public void uimsg(String msg, Object... args) {
 		if (msg == "cancel") {
@@ -257,8 +262,9 @@ public class FlowerMenu extends Widget {
 	public boolean type(char key, java.awt.event.KeyEvent ev) {
 		if ((key >= '0') && (key <= '9')) {
 			int opt = (key == '0') ? 10 : (key - '1');
-			if (opt < menuOptions.length)
-				wdgmsg("cl", opt);
+			if (opt >= menuOptions.length)
+				return true;
+			wdgmsg("cl", opt);
 			ui.grabkeys(null);
 			return (true);
 		} else if (key == 27) {

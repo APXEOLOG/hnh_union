@@ -167,7 +167,6 @@ public class MainFrame extends Frame implements Runnable, FSMan {
 		setVisible(true);
 		havenPanel.init();
 		setExtendedState(getExtendedState() | MAXIMIZED_BOTH);
-		//RemoteLoader.load(); //UNCOMMENT THIS FUCKING SHIT
 	}
 
 	public static Coord getScreenSize() {
@@ -279,12 +278,11 @@ public class MainFrame extends Frame implements Runnable, FSMan {
 	private static void main2(String[] args) {
 		Config.cmdline(args);
 		ThreadGroup g = HackThread.tg();
-		setupres();//UNCOMMENT
+		setupres();
 		MainFrame f = new MainFrame(800, 600);
 		if (Config.fullscreen)
 			f.setfs();
-		f.resetCenter();//
-		//APXUtils.auth();//UNCOMMENT
+		f.resetCenter();
 		f.g = g;
 		if (g instanceof haven.error.ErrorHandler) {
 			final haven.error.ErrorHandler hg = (haven.error.ErrorHandler) g;

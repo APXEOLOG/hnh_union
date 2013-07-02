@@ -7,7 +7,7 @@ public class JSGUI_CheckBox extends JSGUI_Widget {
 	public JSGUI_CheckBox(int lid) {
 		super(lid);
 	}
-	
+
 	/**
 	 * Установить положение чекбокса
 	 * @param b выбрано/не выбрано (true/false)
@@ -15,7 +15,7 @@ public class JSGUI_CheckBox extends JSGUI_Widget {
 	public void setChecked(boolean b) {
 		((CheckBox)wdg()).a = b;
 	}
-	
+
 	/**
 	 * Проверить, установлен ли флаг
 	 * @return true, если установлен
@@ -23,7 +23,7 @@ public class JSGUI_CheckBox extends JSGUI_Widget {
 	public boolean isChecked() {
 		return ((CheckBox)wdg()).a;
 	}
-	
+
 	/**
 	 * Установить текст чекбокса
 	 * @param text текст

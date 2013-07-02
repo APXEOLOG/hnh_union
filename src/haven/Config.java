@@ -116,7 +116,7 @@ public class Config {
 	public static boolean showpathAll;
 	public static boolean showFlavors;
 	public static boolean drawIcons;
-	public static Color hideColor;
+	public static Color hideColor = new Color(255, 0, 0, 128);
 	public static int hideAlpha;
 	//FUKKEN SCENTS!!!
 	public static boolean hideTressp;

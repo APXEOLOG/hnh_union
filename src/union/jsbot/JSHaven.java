@@ -311,6 +311,21 @@ public class JSHaven {
 	public static void jSelectContextMenu(String option_name) {
 		JSBotUtils.selectPopupMenuOpt(option_name);
 	}
+	
+	/**
+	 * Выбрать нужный пункт контекстного меню
+	 * @param option_name имя пункта
+	 */
+	public static void jSelectPopupMenu(String option_name) {
+		jSelectContextMenu(option_name);
+	}
+	
+	/**
+	 * Закрывает контекстное меню, если оно есть
+	 */
+	public static void jClosePopup() {
+		JSBotUtils.closePopup();
+	}
 
 	/**
 	 * Послать действие на сервер
@@ -1343,10 +1358,9 @@ public class JSHaven {
 	// Конец гуя!
 	
 	/**
-	 * Функция для работы с "инветарями" лодок/картов/вагонов
+	 * Функция для работы с "инветарями" лодок/картов/вагонов, возвращает ресурс объекта из такого инвентаря
 	 * @param window имя окна
-	 * @param pos позиция в СПИСКЕ не пустых клеток, т.е. если в лодке во втором слоте лежит бревно,
-	 * то pos указать как 1, если два слота занято и нужно узнать что во втором, то pos указать как 2
+	 * @param pos позиция в окне (как они приходят с сервера - хз, возможно что слева направа и сверху вниз)
 	 * @return полное имя ресурса
 	 */
 	public static String jImgName(String window, int pos) {
@@ -1354,7 +1368,7 @@ public class JSHaven {
 	}
 	
 	/**
-	 * Возвращает количество пустых слотов в лодках/...
+	 * Возвращает общее количество слотов в лодках/...
 	 * @param window имя окна
 	 * @return количество слотов
 	 */
@@ -1374,7 +1388,7 @@ public class JSHaven {
 	/**
 	 * Посылает клик в окне лодки/... в указанный слот с заданным идентификатором
 	 * @param window имя окна
-	 * @param pos позиция элемента (подробнее в jImgName)
+	 * @param pos позиция
 	 * @param btn кнопка мыши
 	 * @param mod модификатор клавиатуры
 	 */
