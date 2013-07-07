@@ -558,7 +558,7 @@ public class Config {
 		options.setProperty("toggleTR", toggleTR ? "true" : "false"); // Kerri
 		options.setProperty("toggleCL", toggleCL ? "true" : "false"); // Kerri
 		options.setProperty("tileAA", tileAA ? "true" : "false"); // Kerri
-		options.setProperty("srawIcons", drawIcons ? "true" : "false"); // Kerri
+		options.setProperty("drawIcons", drawIcons ? "true" : "false"); // Kerri
 		options.setProperty("sshot_compress", sshot_compress ? "true" : "false");
 		options.setProperty("sshot_noui", sshot_noui ? "true" : "false");
 		options.setProperty("sshot_nonames", sshot_nonames ? "true" : "false");

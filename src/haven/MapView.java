@@ -1207,10 +1207,9 @@ public class MapView extends Widget implements DTarget, Console.Directory {
 					if (tg.sc != null) {
 						int hit = 0;
 						for (Pair<String, Color> pp : Config.minimap_highlights) {
-							String ts = tg.getres().name;
-							if (name.contains(pp.fst) && !ts.contains("/cdv")) {
-								if (ts.contains("herbs") && Config.drawIcons) {
-									String tmp = ts.replace("terobjs", "invobjs");
+							if (name.contains(pp.fst) && !name.contains("/cdv")) {
+								if (name.contains("herbs") && Config.drawIcons) {
+									String tmp = name.replace("terobjs", "invobjs");
 									ui.minimappanel.mm.hherbs.add(new Pair<Coord, String>(tg.rc, tmp));
 								}
 								else
@@ -1252,7 +1251,7 @@ public class MapView extends Widget implements DTarget, Console.Directory {
 							}
 						}
 						if (hit > 0 && Config.show_minimap_profits && tg.getres().name.contains("herbs"))
-							drawradius(g, tg.sc, 30);
+							drawradius(g, tg.sc, 15);
 					}
 				}
 			}

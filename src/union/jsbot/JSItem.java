@@ -23,6 +23,14 @@ public class JSItem {
 	}
 	
 	/**
+	 * Проверяет предмет на принадлежность к курьезам
+	 * @return true если предмет курьез (содержится в curio.conf)
+	 */
+	public boolean isCurio() {
+		return wdg().curio_stat != null;
+	}
+	
+	/**
 	 * Возвращает аттеншн курьеза
 	 * @return attention или -1
 	 */

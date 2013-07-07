@@ -51,6 +51,7 @@ public class ISBox extends Widget implements DTarget {
     
     private void setlabel(int rem, int av, int bi) {
         label = lf.renderf("%d/%d/%d", rem, av, bi);
+        boxValues = String.valueOf(rem)+"/"+String.valueOf(av)+"/"+String.valueOf(bi);
     }
     
     public ISBox(Coord c, Widget parent, Resource res, int rem, int av, int bi) {

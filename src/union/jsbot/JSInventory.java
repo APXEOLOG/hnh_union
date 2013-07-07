@@ -205,6 +205,44 @@ public class JSInventory {
 			ret[i] = list.get(i);
 		return ret;
 	}
+	
+	/**
+	 * Возвращает координаты слота инвентаря для предмета с указанным размером в слотах
+	 * @param size размер предмета в слотах инвентаря (к примеру ведро 2х2)
+	 * @return координаты пустого слота для предмета либо null
+	 */
+	public Coord freeSlotSizeCoord(Coord size) {
+		if (size == null || size.x < 1 || size.y < 1)
+			return null;
+		if (size.x == 1 && size.y == 1) {
+			if (freeSlotsCoords().length > 0)
+				return freeSlotsCoords()[0];
+			else
+				return null;
+		}
+		
+		Coord ret= null;
+		Coord[] fslots = freeSlotsCoords();
+		for (int i = 0; i < fslots.length; ++i) {
+			if (fslots[i].x+1+size.x > size().x || fslots[i].y+1+size.y > size().y)
+				continue;
+			boolean free = true;
+			for (int w = 0; w < size.x; ++w) {
+				for (int h = 0; h < size.y; ++h) {
+					Coord tmp = fslots[i].add(new Coord(w, h));
+					if (!isFreeSlot(tmp)) {
+						free = false;
+						break;
+					}
+				}
+			}
+			if (free) {
+				ret = fslots[i];
+				return ret;
+			}
+		}
+		return ret;
+	}
 
 	/**
 	 * Проверяет пустой ли в инвентаре слот с заданными координатами. Слоты

@@ -501,7 +501,7 @@ public class APXUtils {
 				unionRoot, null);
 
 		addResource("toggle_draw_pf_map", "Toggle PF Map", "Do it lol!", 'T',
-				Resource.load("paginae/union/scripts/script2"), unionRoot,
+				resScript2, unionRoot,
 				new MenuElemetUseListener(null) {
 					public void use(int button) {
 						UI.instance.mapview.toggle_draw_pf();
@@ -509,16 +509,14 @@ public class APXUtils {
 				});
 
 		addResource("stop_all_scripts", "Stop all scripts",
-				"Stops all working scripts", 'T',
-				Resource.load("paginae/union/scripts/script5"), unionRoot,
+				"Stops all working scripts", 'a', resScript5, unionRoot,
 				new MenuElemetUseListener(null) {
 					public void use(int button) {
 						JSBot.StopAllScripts();
 					}
 				});
-
-		addResource("hide_all_objects", "Hide ALL Objects", "Do it lol!", 'T',
-				Resource.load("paginae/union/scripts/script2"), unionRoot,
+		
+		addResource("hide_all_objects", "Hide ALL Objects", "Do it lol!", 'H', resScript2, unionRoot,
 				new MenuElemetUseListener(null) {
 					public void use(int button) {
 						Config.hide_all = !Config.hide_all;
@@ -526,28 +524,12 @@ public class APXUtils {
 				});
 
 		addResource("stop_self_moving", "Stop Movement",
-				"Stops movement immidietly", 'S',
-				Resource.load("paginae/union/scripts/script2"), unionRoot,
+				"Stops movement immidietly", 'm', resScript2, unionRoot,
 				new MenuElemetUseListener(null) {
 					public void use(int button) {
 						_add_stop_movement();
 					}
 				});
-		
-		addResource("replace_player_models", "Replace Models",
-				"Stops movement immidietly", 'R',
-				Resource.load("paginae/union/scripts/script2"), unionRoot,
-				new MenuElemetUseListener(null) {
-					public void use(int button) {
-						replacePlayers();
-					}
-				});
-		addResource("auto_aggro_redds", "Agro Enemies", "Aggroes all red points on minimap", 'a', resScript2, unionRoot, new MenuElemetUseListener(null) {
-			@Override
-			public void use(int button) {
-				APXUtils.argoReds();
-			}
-		});
 		JSScriptInfo.LoadAllSriptsToMenu();
 	}
 
@@ -825,10 +807,6 @@ public class APXUtils {
 				}
 			}
 		}).start();
-	}
-	
-	public static void replacePlayers() {
-		/*Арх, что это за пиздец?*/
 	}
 	
 	public static BufferedImage scaleImage(BufferedImage img, int width, int height,

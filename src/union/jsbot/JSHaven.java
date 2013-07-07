@@ -1,5 +1,6 @@
 package union.jsbot;
 
+import haven.Audio;
 import haven.BuddyWnd;
 import haven.Charlist;
 import haven.Coord;
@@ -8,6 +9,7 @@ import haven.LoginScreen;
 import haven.MainFrame;
 import haven.Music;
 import haven.Partyview;
+import haven.Resource;
 import haven.UI;
 import haven.Window;
 
@@ -673,7 +675,7 @@ public class JSHaven {
 	}
 
 	/**
-	 * Проигрывает звук указанное количество миллесекунд, не прерывая
+	 * Проигрывает музыку указанное количество миллесекунд, не прерывая
 	 * выполнение скрипта
 	 * @param msec время проигрывания
 	 */
@@ -684,6 +686,36 @@ public class JSHaven {
 				Music.startPlayBeep();
 				JSBot.Sleep(msec);
 				Music.stopPlayBeep();
+			}
+		}).run();
+	}
+	
+	/**
+	 * Проигрывает звук указанное количество раз с определенной задержкой
+	 * @param resname имя ресурса из папки res/sfx (пример: jPlaySound("sfx/chop", 500, 5);)
+	 * @param delay время задержки между проигрыванием звука
+	 * @param times количество повторений
+	 */
+	public static void jPlaySound(final String resname, final int delay, final int times) {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				Resource alert_sound = Resource.fromFile(resname);
+				if (alert_sound == null) {
+						System.out.println("file does not exists.");
+						return;
+				}
+				int ltimes;
+				if (times < 1)
+					ltimes = 1;
+				else
+					ltimes = times;
+				int t = 0;
+				while (t != ltimes) {
+					Audio.play(alert_sound);
+					JSBot.Sleep(delay);
+					++t;
+				}
 			}
 		}).run();
 	}
