@@ -343,8 +343,12 @@ public class Gob implements Sprite.Owner {
 	
 	public boolean isKin() {
 		KinInfo k = getattr(KinInfo.class);
-		if (k != null && k.group >= 0)
+		if (k != null) {
+			if (k.group == 0 && k.name.length() == 0)
+				return false;
+			if (k.group >= 1)
 				return true;
+		}
 		return false;
 	}
 	

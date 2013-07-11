@@ -548,6 +548,10 @@ public class MCache {
 			int id = msg.uint8();
 			String resnm = msg.string();
 			int resver = msg.uint16();
+			if (id == 11) {
+				resnm = "gfx/tiles/wald/leaf"; //looks like a shit
+				resver = 6;
+			}
 			sets[id] = loadset(resnm, resver);
 		}
 	}
