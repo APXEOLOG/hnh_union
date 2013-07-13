@@ -48,4 +48,11 @@ public class JSGUI_Window extends JSGUI_Widget {
 		}
 		return "";
 	}
+	
+	/**
+	 * Перегрузка для уже имеющихся скриптов
+	 */
+	public String waitButtonClick() {
+		return waitButtonClick(0);
+	}
 }

@@ -4,7 +4,6 @@ import haven.Audio;
 import haven.BuddyWnd;
 import haven.Charlist;
 import haven.Coord;
-import haven.Fightview;
 import haven.LoginScreen;
 import haven.MainFrame;
 import haven.Music;
@@ -22,8 +21,6 @@ import union.JSBot;
 import union.JSBotUtils;
 import union.JSGUI;
 import union.JSThread;
-import union.JSGUI.*;
-import union.jsbot.*;
 
 public class JSHaven {
 	private static Coord unWrapCoord(Object obj) {
@@ -1324,10 +1321,6 @@ public class JSHaven {
 		JSBotUtils.drawGroundRect(unWrapCoord(offset), unWrapCoord(size));
 	}
 	
-	/*
-	 * ГУЙОВЫЕ Н�ШТЯК� � ПРОФ�Т!!!1111
-	 * Афигенные штуки епт
-	 */
 	/**
 	 * Создает окно
 	 * @param position Позиция окна относительно экрана (в пикселях)
@@ -1545,9 +1538,18 @@ public class JSHaven {
 			JSBotUtils.leaveParty();
 	}
 	
-	//tests
-	/*public static int jShopCount() {
-		return JSBotUtils.shopBoxCount();
-	}*/
+	/**
+	 * Предлагает пользователю выбрать область на карте мышью (как линейка по ctrl+l)
+	 * При подтверждении выбора функция возвращает массив из четырех координат:
+	 * 1 - Абсолютные координаты левого верхнего угла области
+	 * 2 - Абсолютные координаты правого нижнего угла области
+	 * 3 - Оффсет от игрока в тайлах (до левого верхнего угла)
+	 * 4 - Размер области в тайлах
+	 * @param wndpos - координаты позоции окна на экране
+	 * @return массив координат
+	 */
+	public static Coord[] jAreaSelector(Object wndpos) {
+		return JSBotUtils.areaSelector(unWrapCoord(wndpos));
+	}
 	
 }//Static haven

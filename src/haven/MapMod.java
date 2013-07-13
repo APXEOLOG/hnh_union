@@ -30,11 +30,13 @@ public class MapMod extends Window implements MapView.Grabber {
     MCache.Overlay ol;
     MCache map;
     boolean walkmod;
-    CheckBox cbox;
-    Button btn;
+    //CheckBox cbox;
+    Button btn; //cancel
+    Button accept;
     Label text;
-    Coord sc, c1, c2;
-    TextEntry tilenum;
+    Coord sc = new Coord(0, 0), c1 = new Coord(0, 0), c2 = new Coord(0, 0);
+    Coord selectedSize = new Coord(0, 0);
+    //TextEntry tilenum;
     public final static String fmt = "Selected: %d" + (char)(0xD7) + "%d";
     
     static {
@@ -46,16 +48,18 @@ public class MapMod extends Window implements MapView.Grabber {
     }
 
     public MapMod(Coord c, Widget parent) {
-        super(c, new Coord(200, 100), parent, "Kartlasskostning");
+        super(c, new Coord(200, 100), parent, "Area selector");
+        cbtn.hide();
         map = ui.sess.glob.map;
         walkmod = true;
         ui.mapview.enol(17);
         ui.mapview.grab(this);
-        cbox = new CheckBox(Coord.z, this, "Walk drawing");
-        btn = new Button(asz.add(-50, -30), 40, this, "Change");
+        //cbox = new CheckBox(Coord.z, this, "Walk drawing");
+        btn = new Button(asz.add(-50, -30), 40, this, "Cancel");
+        accept = new Button(asz.add(-100, -30), 40, this, "Accept");
         text = new Label(Coord.z, this, String.format(fmt, 0, 0));
-        tilenum = new TextEntry(new Coord(0, 40), new Coord(50, 17), this, "0");
-        tilenum.canactivate = true;
+        //tilenum = new TextEntry(new Coord(0, 40), new Coord(50, 17), this, "0");
+        //tilenum.canactivate = true;
     }
 
     public void destroy() {
@@ -105,32 +109,55 @@ public class MapMod extends Window implements MapView.Grabber {
         ol.update(c1, c2);
         this.c1 = c1;
         this.c2 = c2;
-        text.settext(String.format(fmt, c2.x - c1.x + 1, c2.y - c1.y + 1));
+        selectedSize.x = c2.x - c1.x + 1;
+        selectedSize.y = c2.y - c1.y + 1;
+        text.settext(String.format(fmt, selectedSize.x, selectedSize.y));
+    }
+    
+    public Coord getC1() {
+    	return c1;
+    }
+    
+    public Coord getC2() {
+    	return c2;
+    }
+    
+    public Coord getSC() {
+    	return sc;
+    }
+    
+    public Coord getSize() {
+    	return selectedSize;
     }
 
     public void wdgmsg(Widget sender, String msg, Object... args) {
         if(sender == btn) {
-            if((c1 != null) && (c2 != null))
-                wdgmsg("mod", c1, c2);
+//            if((c1 != null) && (c2 != null))
+//                wdgmsg("mod", c1, c2);
+        	//destroy();
+        	ui.destroy(this);
             return;
         }
-        if(sender == cbox) {
-            walkmod = (Boolean)args[0];
-            if(!walkmod) {
-                ui.mapview.grab(this);
-            } else {
-                if(ol != null)
-                    ol.destroy();
-                ol = null;
-                ui.mapview.release(this);
-            }
-            wdgmsg("wm", walkmod?1:0);
-            return;
+        if (sender == accept) {
+        	this.hide();
         }
-        if(sender == tilenum) {
-            wdgmsg("tnum", Integer.parseInt(tilenum.text));
-            return;
-        }
+//        if(sender == cbox) {
+//            walkmod = (Boolean)args[0];
+//            if(!walkmod) {
+//                ui.mapview.grab(this);
+//            } else {
+//                if(ol != null)
+//                    ol.destroy();
+//                ol = null;
+//                ui.mapview.release(this);
+//            }
+//            wdgmsg("wm", walkmod?1:0);
+//            return;
+//        }
+//        if(sender == tilenum) {
+//            wdgmsg("tnum", Integer.parseInt(tilenum.text));
+//            return;
+//        }
         super.wdgmsg(sender, msg, args);
     }
 }

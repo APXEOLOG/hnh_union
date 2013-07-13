@@ -978,6 +978,22 @@ public class JSBotUtils {
 		return (c);
 	}
 	
+	public static Coord[] areaSelector(Coord wpos) {
+		MapMod m = new MapMod(wpos, UI.instance.root);
+		m.show();
+		while (m.visible)
+			JSBot.Sleep(500);
+		Coord [] ret = new Coord[4];
+		if (m != null) {
+			ret[0] = tilify(m.getC1().mul(tileSize));
+			ret[1] = tilify(m.getC2().mul(tileSize));
+			ret[2] = tilify(MyCoord()).sub(tilify(m.getC1().mul(tileSize))).div(tileSize).inv();
+			ret[3] = m.getSize();
+			UI.instance.destroy(m);
+		}
+		return ret;
+	}
+	
 	public static JSGob[] getObjectsInRect(Coord abs, Coord size, int blob, String... names) {
 		abs = tilify(abs);
 		if(blob < 0) blob = 0;
