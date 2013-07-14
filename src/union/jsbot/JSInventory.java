@@ -99,6 +99,38 @@ public class JSInventory {
 			ret[i] = items.get(i);
 		return ret;
 	}
+	
+	/**
+	 * Возвращает список вещей с полным совпадением по имени ресурса
+	 * 
+	 * @param itemmasks
+	 *            Перечисление имен вещей которые надо включить в список
+	 *            также можно исключить вещь из списка добавив !имявещи
+	 * @return массив вещей
+	 */
+	public JSItem[] getEqualItems(String... itemmasks) {
+		ArrayList<JSItem> items = new ArrayList<JSItem>();
+		for (Widget i = wdg().child; i != null; i = i.next) {
+			if (i instanceof Item) {
+				Item buf = (Item) i;
+				if (itemmasks.length > 0 && itemmasks[0].equals(""))
+					items.add(new JSItem(UI.instance.getId(buf)));
+				else {
+					for (String iname : itemmasks) {
+						boolean exclude = iname.startsWith("!");
+						if (buf.GetResName().equalsIgnoreCase(iname) && !exclude) {
+							items.add(new JSItem(UI.instance.getId(buf)));
+							break;
+						}
+					}
+				}
+			}
+		}
+		JSItem[] ret = new JSItem[items.size()];
+		for (int i = 0; i < items.size(); i++)
+			ret[i] = items.get(i);
+		return ret;
+	}
 
 	/**
 	 * Сортирует массив вещей.
