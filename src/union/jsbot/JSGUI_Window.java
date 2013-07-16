@@ -32,9 +32,9 @@ public class JSGUI_Window extends JSGUI_Widget {
      * Других идей у меня небыло
      */
 	public String waitButtonClick(int timeout) {
-        if (timeout == 0){
-            timeout = 10000;
-        }
+		boolean inf = false;
+        if (timeout == 0)
+        	inf = true;
         int cur = 0;
 		while(cur <= timeout){
 			for(Widget i = wdg().child; i != null; i = i.next) {
@@ -43,8 +43,10 @@ public class JSGUI_Window extends JSGUI_Widget {
 					if(b.isChanged()) return b.text.text;
 				}
 			}
-			if (!JSBot.Sleep(25)) break;
-            cur += 25;
+			if (!JSBot.Sleep(25))
+				break;
+            if (!inf)
+            	cur += 25;
 		}
 		return "";
 	}
