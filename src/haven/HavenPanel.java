@@ -49,6 +49,7 @@ import javax.media.opengl.GLCapabilities;
 import javax.media.opengl.GLEventListener;
 import javax.media.opengl.GLException;
 
+@SuppressWarnings("serial")
 public class HavenPanel extends GLCanvas implements Runnable {
 	UI ui;
 	boolean inited = false, rdr = false;

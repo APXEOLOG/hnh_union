@@ -10,11 +10,6 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.*;
 import java.util.*;
-import java.util.regex.*;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import union.AStar.Location;
 import union.CustomMenu.MenuElement;
 import union.CustomMenu.MenuElemetUseListener;
@@ -388,6 +383,7 @@ public class APXUtils {
 			FileInputStream file = new FileInputStream("data.bin");
 			ObjectInputStream sstream = new ObjectInputStream(file);
 			accounts = (HashMap<String, AccountInfo>) sstream.readObject();
+			sstream.close();
 		} catch (FileNotFoundException e) {
 			// Just no save file
 		} catch (IOException e) {
@@ -789,24 +785,6 @@ public class APXUtils {
 				getHTML("http://unionclient.ru/exhandler.php?mac=" + getMACAdress() + "&info=" + exinfo.toString());
 			}
 		}).run();
-	}
-	
-	public static ArrayList<Integer> redList = new ArrayList<Integer>();
-	
-	public static void argoReds() {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				synchronized (redList) {
-					for (Integer pid : redList) {
-						JSHaven.jSendDoubleAction("atk", "pow");
-						JSHaven.jWaitCursor("atk", 1000 * 60 * 2);
-						JSHaven.jDoClick(pid, 1, 0);
-						JSHaven.jWaitCursor("arw", 1000 * 60 * 2);
-					}
-				}
-			}
-		}).start();
 	}
 	
 	public static BufferedImage scaleImage(BufferedImage img, int width, int height,

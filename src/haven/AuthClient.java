@@ -30,6 +30,7 @@ import java.io.*;
 import java.net.*;
 import java.security.MessageDigest;
 
+@SuppressWarnings("static-access")
 public class AuthClient {
 	private static final SslHelper ssl;
 	private static final int CMD_USR = 1;

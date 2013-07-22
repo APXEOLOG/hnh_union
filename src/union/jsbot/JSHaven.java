@@ -32,6 +32,7 @@ public class JSHaven {
 		return Coord.z;
 	}
 	
+	@SuppressWarnings("unused")
 	private static JSGob unWrapGob(Object obj) {
 		if (obj instanceof org.mozilla.javascript.Wrapper) {
 			Object temp = ((org.mozilla.javascript.Wrapper)obj).unwrap();
@@ -1545,11 +1546,71 @@ public class JSHaven {
 	 * 2 - Абсолютные координаты правого нижнего угла области
 	 * 3 - Оффсет от игрока в тайлах (до левого верхнего угла)
 	 * 4 - Размер области в тайлах
+	 * В случае отмены массив в себе будет содержать 4 null'а.
 	 * @param wndpos - координаты позоции окна на экране
 	 * @return массив координат
 	 */
 	public static Coord[] jAreaSelector(Object wndpos) {
-		return JSBotUtils.areaSelector(unWrapCoord(wndpos));
+		Coord[] ret = new Coord[4];
+		ret = JSBotUtils.areaSelector(unWrapCoord(wndpos));
+		while (jHaveWindow("Area Selector"))
+			jSleep(500);
+		return ret;
+	}
+	
+	/**
+	 * Возвращает набор фепов в феп полоске
+	 * @return массив фепов (возможные значения: "str", "agil", "intel", "cons", "perc", "csm", "dxt", "psy")
+	 */
+	public static String[] jGetFepCurrentList() {
+		return JSBotUtils.getFepList();
+	}
+	
+	/**
+	 * Возвращает значение указанного фепа в феп полоске
+	 * @param fepName имя фепа в феп полоске (доступные значения: "str", "agil", "intel", "cons", "perc", "csm", "dxt", "psy")
+	 * @return значение фепа, либо 0
+	 */
+	public static double jGetFepCurrentAmount(String fepName) {
+		return JSBotUtils.getFepByName(fepName);
+	}
+	
+	/**
+	 * Возвращает текущий кап фепа, то есть максимум феп полоски
+	 * @return кап феп полоски
+	 */
+	public static double jGetFepCurrentCap() {
+		return JSBotUtils.getCurrentFepCap();
+	}
+	
+	/**
+	 * Возвращает максимальное значение фепа
+	 * @return максфеп
+	 */
+	public static int jGetFepMaxValue() {
+		return JSBotUtils.getMaxStatValue();
+	}
+	
+	/**
+	 * Возвращает имя стата с максимальным фепом
+	 * @return имя стата (возможные значения: "str", "agil", "intel", "cons", "perc", "csm", "dxt", "psy")
+	 */
+	public static String jGetFepMaxName() {
+		return JSBotUtils.getMaxStatName();
+	}
+	
+	/**
+	 * Возващает базовое значения стата (без баффов) по его имени
+	 * @param name
+	 * Возможные значения:
+	 * ФЕПы: "str", "agil", "intel", "cons", "perc", "csm", "dxt", "psy"
+	 * Скиллы: "unarmed", "melee", "ranged", "explore", "stealth", "sewing", "smithing", "carpentry", "cooking", "farming", "survive"
+	 * Белифсы: "life", "night", "civil", "nature", "martial", "change"
+	 * ЛА: "expmod"
+	 * @return текущее значение стата, либо 0
+	 */
+	public static int jGetStatByName(String name) {
+		return JSBotUtils.getStat(name);
 	}
 	
 }//Static haven

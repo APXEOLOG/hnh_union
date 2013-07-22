@@ -42,9 +42,6 @@ public class BuddyWnd extends Window {
 	public Map<Integer, Buddy> idmap = new HashMap<Integer, Buddy>();
 	private BuddyList bl;
 	private BuddyInfo bi;
-	private Button sbalpha;
-	private Button sbgroup;
-	private Button sbstatus;
 	private TextEntry charpass, opass;
 	public static final Tex online = Resource.loadtex("gfx/hud/online");
 	public static final Tex offline = Resource.loadtex("gfx/hud/offline");
@@ -427,17 +424,17 @@ public class BuddyWnd extends Window {
 			}
 		};
 		bi = new BuddyInfo(new Coord(210, 5), new Coord(180, 280), this);
-		sbstatus = new Button(new Coord(5, 290), 120, this, "Sort by status") {
+		new Button(new Coord(5, 290), 120, this, "Sort by status") {
 			public void click() {
 				setcmp(statuscmp);
 			}
 		};
-		sbgroup = new Button(new Coord(140, 290), 120, this, "Sort by group") {
+		new Button(new Coord(140, 290), 120, this, "Sort by group") {
 			public void click() {
 				setcmp(groupcmp);
 			}
 		};
-		sbalpha = new Button(new Coord(275, 290), 120, this,
+		new Button(new Coord(275, 290), 120, this,
 				"Sort alphabetically") {
 			public void click() {
 				setcmp(alphacmp);

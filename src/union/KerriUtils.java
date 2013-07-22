@@ -7,15 +7,9 @@ import haven.GOut;
 import haven.Gob;
 import haven.IButton;
 import haven.Resource;
-import haven.Session;
-import haven.Tex;
-import haven.TexI;
 import haven.UI;
 import haven.INIFile.Pair;
-import haven.Resource.Image;
-
 import java.awt.Color;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 

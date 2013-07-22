@@ -104,12 +104,11 @@ public class Audio {
 	
     private static class Player extends HackThread {
 	private Collection<CS> clips = new LinkedList<CS>();
-	private int srate, nch = 2;
+	private int nch = 2;
 	
 	Player() {
 	    super("Haven audio player");
 	    setDaemon(true);
-	    srate = (int)fmt.getSampleRate();
 	}
 	
 	private void fillbuf(byte[] buf, int off, int len) {

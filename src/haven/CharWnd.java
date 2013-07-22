@@ -43,9 +43,9 @@ public class CharWnd extends Window {
 	int btime = 0;
 	SkillList psk, nsk;
 	SkillInfo ski;
-	FoodMeter foodm;
+	public static FoodMeter foodm;
 	public static Study study;
-	Map<String, Attr> attrs = new TreeMap<String, Attr>();
+	static Map<String, Attr> attrs = new TreeMap<String, Attr>();
 	public static final Tex missing = Resource.loadtex("gfx/invobjs/missing");
 	public static final Tex foodmimg = Resource.loadtex("gfx/hud/charsh/foodm");
 	public static final Color debuff = new Color(255, 128, 128);
@@ -172,30 +172,43 @@ public class CharWnd extends Window {
 	}
 
 	class NAttr extends Attr {
+		ArrayList<String> attrNames = new ArrayList<String>(
+				Arrays.asList("str", "agil", "intel", "cons", "perc", "csm", "dxt", "psy"));
 		Label lbl;
+		Label lbl2;
 
 		NAttr(String nm, int x, int y) {
 			super(nm);
-			this.lbl = new Label(new Coord(x, y), cattr, "0");
+			this.lbl = new Label(new Coord(x, y), cattr, "");
+			if (attrNames.contains(nm))
+				this.lbl2 = new Label(new Coord(x+35, y), cattr, "");
 			update();
 		}
 
 		public void update() {
-			lbl.settext(Integer.toString(attr.comp));
+			if (attrNames.contains(nm) && lbl2 != null) {
+				if (attr.comp != attr.base)	{
+					lbl2.settext(Integer.toString(attr.comp));
+					if (attr.comp < attr.base) {
+						// debuff
+						lbl2.setcolor(debuff);
+						lbl2.tooltip = String.format("%d", attr.comp - attr.base);
+					} else if (attr.comp > attr.base) {
+						// buff
+						lbl2.setcolor(buff);
+						lbl2.tooltip = String.format("+%d", attr.comp - attr.base);
+					} else {
+						lbl2.setcolor(Color.WHITE);
+						lbl2.tooltip = null;
+					}
+				} else {
+					lbl2.settext("");
+					lbl2.tooltip = null;
+				}
+			}
+			lbl.settext(Integer.toString(attr.base));
 			if ((nm == "intel") && study != null) {
 				study.setattnlimit(attr.comp);
-			}
-			if (attr.comp < attr.base) {
-				lbl.setcolor(debuff);
-				lbl.tooltip = String.format("%d - %d", attr.base, attr.base
-						- attr.comp);
-			} else if (attr.comp > attr.base) {
-				lbl.setcolor(buff);
-				lbl.tooltip = String.format("%d + %d", attr.base, attr.comp
-						- attr.base);
-			} else {
-				lbl.setcolor(Color.WHITE);
-				lbl.tooltip = null;
 			}
 		}
 	}
@@ -261,14 +274,19 @@ public class CharWnd extends Window {
 
 		void upd() {
 			lbl.settext(Integer.toString(tvalc));
-			if (tvalb > attr.base)
+			if (tvalb > attr.base) {
 				lbl.setcolor(new Color(128, 128, 255));
-			else if (attr.comp > attr.base)
+				lbl.tooltip = String.format("%d", attr.base);
+			} else if (attr.comp > attr.base) {
 				lbl.setcolor(buff);
-			else if (attr.comp < attr.base)
+				lbl.tooltip = String.format("%d + %d", attr.base, attr.comp - attr.base);
+			} else if (attr.comp < attr.base) {
 				lbl.setcolor(debuff);
-			else
+				lbl.tooltip = String.format("%d - %d", attr.base, attr.base - attr.comp);
+			} else {
 				lbl.setcolor(Color.WHITE);
+				lbl.tooltip = null;
+			}
 			updexp();
 		}
 
@@ -354,8 +372,8 @@ public class CharWnd extends Window {
 		}
 	}
 
-	private class FoodMeter extends Widget {
-		int cap;
+	public class FoodMeter extends Widget {
+		int cap = 0;
 		List<El> els = new LinkedList<El>();
 
 		private class El {
@@ -372,6 +390,35 @@ public class CharWnd extends Window {
 
 		public FoodMeter(Coord c, Widget parent) {
 			super(c, foodmimg.sz(), parent);
+		}
+		
+		public String[] getElsNames() {
+			String[] ret;
+			synchronized(els) {
+				ret = new String[els.size()];
+				for(int i = 0; i < els.size(); ++i) {
+					ret[i] = els.get(i).id;
+				}
+			}
+			return ret;
+		}
+		
+		public double getFepValue(String id) {
+			double ret = 0.0;
+			synchronized(els) {
+				for (int i = 0; i < els.size(); ++i) {
+					El tel = els.get(i);
+					if (tel.id.equals(id)) {
+						ret = ((double) tel.amount)/10;
+						break;
+					}
+				}
+			}
+			return ret;
+		}
+		
+		public int getCap() {
+			return cap;
 		}
 
 		public void draw(GOut g) {
@@ -911,6 +958,45 @@ public class CharWnd extends Window {
 			UI.instance.minimappanel.pcl.click();
 			}
 		}
+	}
+	
+	public static int getMaxFepValue() {
+		ArrayList<String> attrNames = new ArrayList<String>(
+				Arrays.asList("str", "agil", "intel", "cons", "perc", "csm", "dxt", "psy"));
+		int ret = 0;
+		for (Attr attr : attrs.values()) {
+			if (!attrNames.contains(attr.nm))
+				continue;
+			if (attr.attr.base > ret)
+				ret = attr.attr.base;
+		}
+		return ret;
+	}
+	
+	public static String getMaxFepName() {
+		ArrayList<String> attrNames = new ArrayList<String>(
+				Arrays.asList("str", "agil", "intel", "cons", "perc", "csm", "dxt", "psy"));
+		String ret = null;
+		int m = 0;
+		for (Attr attr : attrs.values()) {
+			if (!attrNames.contains(attr.nm))
+				continue;
+			if (attr.attr.base > m) {
+				m = attr.attr.base;
+				ret = attr.nm;
+			}
+		}
+		return ret;
+	}
+	
+	public static int getStat(String name) {
+		int ret = 0;
+		for (Attr attr : attrs.values()) {
+			if (attr.attr.nm.equals(name)) {
+				ret = attr.attr.base;
+			}
+		}
+		return ret;
 	}
 
 	public void uimsg(String msg, Object... args) {

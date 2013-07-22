@@ -26,12 +26,8 @@
 
 package haven;
 
-import haven.INIFile.Pair;
-
 import java.awt.Color;
 import java.util.*;
-
-import union.APXUtils;
 
 public class Gob implements Sprite.Owner {
 	public Coord rc, sc;

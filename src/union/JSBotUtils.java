@@ -52,7 +52,9 @@ public class JSBotUtils {
 		if (wdg instanceof Window) { // Last created window
 			lastCreatedWindow = (Window) wdg;
 			if (((Window)wdg).cap.text.equals("Change Name")) {
+				@SuppressWarnings("unused")
 				Button btnGen = new Button(new Coord(210, 20), 35, wdg, "Gen") {
+					@SuppressWarnings("deprecation")
 					@Override
 					public void click() {
 						parent.findchild(TextEntry.class).settext(APXUtils.generateNickname());
@@ -979,18 +981,24 @@ public class JSBotUtils {
 	}
 	
 	public static Coord[] areaSelector(Coord wpos) {
-		MapMod m = new MapMod(wpos, UI.instance.root);
-		m.show();
-		while (m.visible)
+		final Coord [] ret = new Coord[4];
+		new MapMod(wpos, UI.instance.root){
+			// I like Java for this shit 
+			public void wdgmsg(Widget sender, String msg, Object... args) {
+				if (sender == accept) {
+					ret[0] = tilify(c1.mul(tileSize));
+					ret[1] = tilify(c2.mul(tileSize));
+					ret[2] = tilify(MyCoord()).sub(tilify(c1.mul(tileSize))).div(tileSize).inv();
+					ret[3] = selectedSize;
+					ui.destroy(this);
+				}
+				if (sender == btn) {
+					ui.destroy(this);
+				}
+			}
+		};
+		while (haveWindow("Area Selector"))
 			JSBot.Sleep(500);
-		Coord [] ret = new Coord[4];
-		if (m != null) {
-			ret[0] = tilify(m.getC1().mul(tileSize));
-			ret[1] = tilify(m.getC2().mul(tileSize));
-			ret[2] = tilify(MyCoord()).sub(tilify(m.getC1().mul(tileSize))).div(tileSize).inv();
-			ret[3] = m.getSize();
-			UI.instance.destroy(m);
-		}
 		return ret;
 	}
 	
@@ -1023,5 +1031,29 @@ public class JSBotUtils {
 	
 	public static boolean haveParty() {
 		return glob.party.memb.size() > 1;
+	}
+	
+	public static String[] getFepList() {
+		return CharWnd.foodm.getElsNames();
+	}
+	
+	public static double getFepByName(String id) {
+		return CharWnd.foodm.getFepValue(id);
+	}
+	
+	public static int getMaxStatValue() {
+		return CharWnd.getMaxFepValue();
+	}
+	
+	public static String getMaxStatName() {
+		return CharWnd.getMaxFepName();
+	}
+	
+	public static int getStat(String n) {
+		return CharWnd.getStat(n);
+	}
+	
+	public static double getCurrentFepCap() {
+		return ((double) CharWnd.foodm.getCap() / 10);
 	}
 }

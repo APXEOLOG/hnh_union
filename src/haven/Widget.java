@@ -59,7 +59,6 @@ public class Widget {
 			ISBox.class, ComMeter.class, Fightview.class, IMeter.class,
 			GiveButton.class, Charlist.class, ComWin.class, CharWnd.class,
 			BuddyWnd.class, ChatHW.class, Speedget.class, Bufflist.class
-			//, Shopbox.class
 			};
 
 	static {

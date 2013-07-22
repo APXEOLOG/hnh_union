@@ -30,8 +30,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.lang.Thread.UncaughtExceptionHandler;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.*;
 
 import union.APXUtils;
@@ -39,7 +37,7 @@ import union.JSBot;
 
 @SuppressWarnings("serial")
 public class MainFrame extends Frame implements Runnable, FSMan {
-	public static final String hhVersion = "7.2e";
+	public static final String hhVersion = "7.2f";
 	public static final String TITLE = "UNION build :: v"+hhVersion;
 	public static HavenPanel havenPanel;
 	ThreadGroup g;

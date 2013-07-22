@@ -60,6 +60,7 @@ public class GOut {
 		this.sh.root = this;
 	}
 
+	@SuppressWarnings("serial")
 	public static class GLException extends RuntimeException {
 		public int code;
 		public String str;

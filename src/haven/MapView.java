@@ -1200,7 +1200,6 @@ public class MapView extends Widget implements DTarget, Console.Directory {
 			ui.minimappanel.mm.profits.clear();
 			ui.minimappanel.mm.hherbs.clear();
 			ui.minimappanel.mm.players.clear();
-			APXUtils.redList.clear();
 			synchronized (glob.oc) {
 				for (Gob tg : glob.oc) {
 					name = tg.resname();
@@ -1209,7 +1208,13 @@ public class MapView extends Widget implements DTarget, Console.Directory {
 						for (Pair<String, Color> pp : Config.minimap_highlights) {
 							if (name.contains(pp.fst) && !name.contains("/cdv")) {
 								if (name.contains("herbs") && Config.drawIcons) {
-									String tmp = name.replace("terobjs", "invobjs");
+									String tmp;
+									if (name.contains("mussel")) {
+										// маму Лофтара ебал кароч
+										tmp = name.replace("terobjs/herbs", "invobjs");
+									} else {
+										tmp = name.replace("terobjs", "invobjs");
+									}
 									ui.minimappanel.mm.hherbs.add(new Pair<Coord, String>(tg.rc, tmp));
 								}
 								else
@@ -1242,12 +1247,9 @@ public class MapView extends Widget implements DTarget, Console.Directory {
 									ui.minimappanel.mm.players.add(new Pair<Coord, Color>(tg.rc, BuddyWnd.gc[1]));
 								} else {
 									ui.minimappanel.mm.players.add(new Pair<Coord, Color>(tg.rc, BuddyWnd.gc[k.group]));
-									if (k.group == 2 || k.group == 0)
-										APXUtils.redList.add(tg.id);
 								}
 							} else {
 								ui.minimappanel.mm.players.add(new Pair<Coord, Color>(tg.rc, Color.decode("0xFF0000")));
-								APXUtils.redList.add(tg.id);
 							}
 						}
 						if (hit > 0 && Config.show_minimap_profits && tg.getres().name.contains("herbs"))
