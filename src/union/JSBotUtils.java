@@ -997,8 +997,6 @@ public class JSBotUtils {
 				}
 			}
 		};
-		while (haveWindow("Area Selector"))
-			JSBot.Sleep(500);
 		return ret;
 	}
 	
